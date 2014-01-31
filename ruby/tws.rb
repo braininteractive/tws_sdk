@@ -64,14 +64,11 @@ class TWS
     JSON.parse(response.body)
   end
   
-  def get_models query={}
+  def get_models params={}
     t = expire
     sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models|
     auth_header = "3WS #{@api_key}:#{sig}"
-    f = URI.escape(query[:f]) rescue nil
-    q = URI.escape(query[:q]) rescue nil
-    m = URI.escape(query[:m]) rescue nil
-    response = RestClient.get  "#{@stor_host}/api/v#{@api_version}/models?expire=#{t}&f=#{f}&q=#{q}&m=#{m}",
+    response = RestClient.get  "#{@stor_host}/api/v#{@api_version}/models?expire=#{t}&#{params.to_query}",
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
@@ -122,10 +119,10 @@ class TWS
     JSON.parse(response.body)
   end
   
-  def get_link id
+  def get_link id, filename=""
     t = expire
     sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models/#{id}/download|
-    "#{@stor_host}/api/v#{@api_version}/models/#{id}/download?expire=#{t}&key=#{@api_key}&sig=#{sig}"
+    "#{@stor_host}/api/v#{@api_version}/models/#{id}/download?expire=#{t}&key=#{@api_key}&signature=#{sig}&filename=#{CGI.escape(filename)}"
   end
   
 end
