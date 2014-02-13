@@ -6,10 +6,11 @@ require 'active_support/all'
 class TWS
   
   def initialize opts={}
-    @api_key = opts[:api_key] || 'bddc716254630f33f6e97e2636907c8e'
-    @api_secret = opts[:api_secret] || '2de641661658231a4a7fe58de891e428'
-    @stor_host = opts[:stor_host] || "https://stor.herokuapp.com"
-    @auth_host = opts[:auth_host] || "https://threews.herokuapp.com"
+    @api_key = opts[:api_key]
+    @api_secret = opts[:api_secret]
+    @stom_host = opts[:stom_host] || "http://localhost:3000" # "https://stom.herokuapp.com"
+    @stor_host = opts[:stor_host] || "http://localhost:3002" # "https://stor.herokuapp.com"
+    @stid_host = opts[:stid_host] || "http://localhost:3001" # "https://stid.herokuapp.com"
     @api_version = opts[:api_version] || 1
     @default_expire = 1.hour
   end
@@ -34,7 +35,7 @@ class TWS
   def authenticate
     t = expire
     sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/authenticate|
-    response = RestClient.post "#{@auth_host}/api/v#{@api_version}/authenticate", {
+    response = RestClient.post "#{@stid_host}/api/v#{@api_version}/authenticate", {
       :key => @api_key,
       :signature => sig,
       :method => 'POST',
@@ -123,6 +124,15 @@ class TWS
     t = expire
     sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models/#{id}/download|
     "#{@stor_host}/api/v#{@api_version}/models/#{id}/download?expire=#{t}&key=#{@api_key}&signature=#{sig}&filename=#{CGI.escape(filename)}"
+  end
+  
+  def stom_sessions
+    t = expire
+    sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/sessions|
+    auth_header = "3WS #{@api_key}:#{sig}"
+    response = RestClient.get  "#{@stom_host}/api/v#{@api_version}/sessions?expire=#{t}",
+                                :Authorization => auth_header
+    JSON.parse(response.body)
   end
   
 end
