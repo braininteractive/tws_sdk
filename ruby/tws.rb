@@ -1,20 +1,15 @@
-require 'rubygems'
-require 'restclient'
-require 'open-uri'
-require 'active_support/all'
-
 class TWS
   
   def initialize opts={}
     @api_key = opts[:api_key]
     @api_secret = opts[:api_secret]
-    @stom_host = opts[:stom_host] || "http://localhost:3000" # "https://stom.herokuapp.com"
-    @stor_host = opts[:stor_host] || "http://localhost:3002" # "https://stor.herokuapp.com"
-    @stid_host = opts[:stid_host] || "http://localhost:3001" # "https://stid.herokuapp.com"
+    @stom_host = opts[:stom_host] || "https://stom.herokuapp.com"
+    @stor_host = opts[:stor_host] || "https://stor.herokuapp.com"
+    @stid_host = opts[:stid_host] || "https://stid.herokuapp.com"
     @api_version = opts[:api_version] || 1
     @default_expire = 1.hour
   end
-  
+
   def signature string_to_sign
     raise "api_secret is not set" if @api_secret.blank?
     CGI.escape(
@@ -124,6 +119,21 @@ class TWS
     t = expire
     sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models/#{id}/download|
     "#{@stor_host}/api/v#{@api_version}/models/#{id}/download?expire=#{t}&key=#{@api_key}&signature=#{sig}&filename=#{CGI.escape(filename)}"
+  end
+  
+  def request_tptx opts={}
+    re = RestClient.post "https://cloud3d.herokuapp.com/api/v1/jobs", {
+      :auth_token => 'XyDJkYZ9iwJyeqqaBqWf',
+      :input_url => opts[:input_url],
+      :input_type => opts[:input_type],
+      :include_thumbnail => opts[:include_thumbnail]
+    }
+    JSON.parse(re.body)
+  end
+  
+  def poll_tptx job_id
+    re = RestClient.get "https://cloud3d.herokuapp.com/api/v1/jobs/#{job_id}?auth_token=XyDJkYZ9iwJyeqqaBqWf"
+    JSON.parse(re.body)
   end
   
   def stom_sessions
