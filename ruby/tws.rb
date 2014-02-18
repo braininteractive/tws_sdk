@@ -1,3 +1,8 @@
+require 'rubygems'
+require 'restclient'
+require 'open-uri'
+require 'active_support/all'
+
 class TWS
   
   def initialize opts={}
@@ -136,11 +141,49 @@ class TWS
     JSON.parse(re.body)
   end
   
-  def stom_sessions
+  def get_sessions
     t = expire
     sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/sessions|
     auth_header = "3WS #{@api_key}:#{sig}"
     response = RestClient.get  "#{@stom_host}/api/v#{@api_version}/sessions?expire=#{t}",
+                                :Authorization => auth_header
+    JSON.parse(response.body)
+  end
+  
+  def create_session
+    t = expire
+    sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/sessions|
+    auth_header = "3WS #{@api_key}:#{sig}"
+    response = RestClient.post  "#{@stom_host}/api/v#{@api_version}/sessions?expire=#{t}",
+                                {},
+                                :Authorization => auth_header
+    JSON.parse(response.body)
+  end
+  
+  def delete_session id
+    t = expire
+    sig = signature %|DELETE\n\n#{t}\n/api/v#{@api_version}/sessions/#{id}|
+    auth_header = "3WS #{@api_key}:#{sig}"
+    response = RestClient.delete  "#{@stom_host}/api/v#{@api_version}/sessions/#{id}?expire=#{t}",
+                                :Authorization => auth_header
+    JSON.parse(response.body)
+  end
+  
+  def session_run id, code
+    t = expire
+    sig = signature %|PUT\n\n#{t}\n/api/v#{@api_version}/sessions/#{id}/run|
+    auth_header = "3WS #{@api_key}:#{sig}"
+    response = RestClient.put  "#{@stom_host}/api/v#{@api_version}/sessions/#{id}/run?expire=#{t}",
+                                {:code => code},
+                                :Authorization => auth_header
+    JSON.parse(response.body)
+  end
+  
+  def session_result id
+    t = expire
+    sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/sessions/#{id}/result|
+    auth_header = "3WS #{@api_key}:#{sig}"
+    response = RestClient.get  "#{@stom_host}/api/v#{@api_version}/sessions/#{id}/result?expire=#{t}",
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
