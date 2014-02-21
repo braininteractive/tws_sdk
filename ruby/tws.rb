@@ -6,8 +6,8 @@ require 'active_support/all'
 class TWS
   
   def initialize opts={}
-    @api_key = opts[:api_key]
-    @api_secret = opts[:api_secret]
+    @api_key = opts[:api_key] || ENV['3WS_API_KEY']
+    @api_secret = opts[:api_secret] || ENV['3WS_API_SECRET']
     @stom_host = opts[:stom_host] || "https://stom.herokuapp.com"
     @stor_host = opts[:stor_host] || "https://stor.herokuapp.com"
     @stid_host = opts[:stid_host] || "https://stid.herokuapp.com"
