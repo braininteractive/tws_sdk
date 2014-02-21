@@ -17,3 +17,5 @@
 
 /solr/data
 /solr/pids
+
+__pycache__/*
