@@ -6,8 +6,8 @@ require 'active_support/all'
 class TWS
   
   def initialize opts={}
-    @api_key = opts[:api_key] || ENV['3WS_API_KEY']
-    @api_secret = opts[:api_secret] || ENV['3WS_API_SECRET']
+    @api_key = opts[:api_key] || ENV['TWS_API_KEY']
+    @api_secret = opts[:api_secret] || ENV['TWS_API_SECRET']
     @stom_host = opts[:stom_host] || "https://stom.herokuapp.com"
     @stor_host = opts[:stor_host] || "https://stor.herokuapp.com"
     @stid_host = opts[:stid_host] || "https://stid.herokuapp.com"
@@ -169,7 +169,7 @@ class TWS
     JSON.parse(response.body)
   end
   
-  def delete_session id
+  def close_session id
     t = expire
     sig = signature %|DELETE\n\n#{t}\n/api/v#{@api_version}/sessions/#{id}|
     auth_header = "3WS #{@api_key}:#{sig}"

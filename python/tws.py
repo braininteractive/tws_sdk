@@ -6,14 +6,27 @@ import urllib
 import time
 import requests
 import json
+import os
 
 class Tws:
-  
   def __init__( self, api_key = None, api_secret = None,
                 stom_host = "https://stom.herokuapp.com",
                 stor_host = "https://stor.herokuapp.com",
                 stid_host = "https://stid.herokuapp.com",
                 api_version = 1 ):
+
+    if not api_key:
+      try:
+        api_key = os.environ['TWS_API_KEY']
+      except:
+        pass
+
+    if not api_secret:
+      try:
+        api_secret = os.environ['TWS_API_SECRET']
+      except:
+        pass
+
     self.api_key = api_key
     self.api_secret = api_secret
     self.stom_host = stom_host
@@ -57,10 +70,13 @@ class Tws:
     self.set_expire()
     response = requests.post(
       self.endpoint('stor', '/models'),
-      data={"meta": meta, "upload_id": upload_id},
-      headers={'Authorization': self.authorization('POST', '/models')}
+      data=json.dumps({"meta": meta, "upload_id": upload_id}),
+      headers={'Authorization': self.authorization('POST', '/models'), 'Content-Type': 'application/json'}
     )
-    return response.json()
+    if response.status_code == 201:
+      return response.json()
+    else:
+      return response.status_code
 
   def get_model(self, mid):
     self.set_expire()
@@ -68,7 +84,10 @@ class Tws:
       self.endpoint('stor', '/models/%s' % mid),
       headers={'Authorization': self.authorization('GET', '/models/%s' % mid)}
     )
-    return response.json()
+    if response.status_code == 200:
+      return response.json()
+    else:
+      return response.status_code
 
   def get_models(self, params={}):
     self.set_expire()
@@ -76,11 +95,30 @@ class Tws:
       self.endpoint('stor', '/models', extra_params=params),
       headers={'Authorization': self.authorization('GET', '/models')}
     )
-    return response.json()
+    if response.status_code == 200:
+      return response.json()
+    else:
+      return response.status_code
   
-  #def update_model(self, meta={}):
+  def update_model(self, mid, meta={}):
+    self.set_expire()
+    response = requests.put(
+      self.endpoint('stor', '/models/%s' % mid),
+      data=json.dumps({"meta": meta}),
+      headers={'Authorization': self.authorization('PUT', '/models/%s' % mid), 'Content-Type': 'application/json'}
+    )
+    if response.status_code == 200:
+      return response.json()
+    else:
+      return response.status_code
   
-  #def delete_model(self, mid):
+  def delete_model(self, mid):
+    self.set_expire()
+    response = requests.delete(
+      self.endpoint('stor', '/models/%s' % mid),
+      headers={'Authorization': self.authorization('DELETE', '/models/%s' % mid)}
+    )
+    return response.status_code
     
   def presigned_upload_form(self):
     self.set_expire()
@@ -88,20 +126,92 @@ class Tws:
       self.endpoint('stor', '/models/presign'),
       headers = { 'Authorization': self.authorization('GET', '/models/presign') }
     )
-    return response.json()
+    if response.status_code == 200:
+      return response.json()
+    else:
+      return None
 
   def upload_model(self, path, meta={}):
+    self.set_expire()
     presign = self.presigned_upload_form()
+    files = {'file': open(path, 'rb')}
     upload_response = requests.post(
       presign["form_action"],
-      presign["form_fields"]
+      data=presign["form_fields"],
+      files=files
     )
-
+    return self.create_model(meta, presign['upload_id'])
+    
+  def get_link(self, mid, filename=''):
     self.set_expire()
-    auth_header = self.authorization("POST\n\n%s\n/api/v%s/models" % (t, self.api_version))
-    response = requests.post(
-      self.endpoint('stor', '/models'),
-      {"meta": meta, "upload_id": presign["upload_id"]},
-      headers = {"Authorization": self.authorization('POST', '/models')}
+    sig = self.signature(self.string_to_sign('GET', '/models/%s/download' % mid))
+    escaped_filename = urllib.parse.quote_plus(filename)
+    return "%s/api/v%s/models/%s/download?expire=%s&key=%s&signature=%s&filename=%s" % (self.stor_host, self.api_version, mid, self.expire, self.api_key, sig, escaped_filename)
+    
+  def get_sessions(self):
+    self.set_expire()
+    response = requests.get(
+      self.endpoint('stom', '/sessions'),
+      headers = { 'Authorization': self.authorization('GET', '/sessions') }
     )
-    return response.json()
+    if response.status_code == 200:
+      return response.json()
+    else:
+      return response.status_code
+
+  def get_session(self, sid):
+    self.set_expire()
+    response = requests.get(
+      self.endpoint('stom', '/sessions/%s' % sid),
+      headers = { 'Authorization': self.authorization('GET', '/sessions/%s' % sid) }
+    )
+    if response.status_code == 200:
+      return response.json()
+    else:
+      return response.status_code
+
+  def create_session(self, timeout=60):
+    self.set_expire()
+    response = requests.post(
+      self.endpoint('stom', '/sessions'),
+      data = json.dumps({"timeout": timeout}),
+      headers = { 'Authorization': self.authorization('POST', '/sessions'), 'Content-Type': 'application/json' }
+    )
+    if response.status_code == 201:
+      return response.json()
+    else:
+      return response.status_code
+
+  def close_session(self, sid):
+    self.set_expire()
+    response = requests.delete(
+      self.endpoint('stom', '/sessions/%s' % sid),
+      headers = { 'Authorization': self.authorization('DELETE', '/sessions/%s' % sid) }
+    )
+    if response.status_code == 200:
+      return response.json()
+    else:
+      return response.status_code
+
+  def create_run(self, sid, code):
+    self.set_expire()
+    response = requests.post(
+      self.endpoint('stom', '/sessions/%s/runs' % sid),
+      data = json.dumps({'code':code}),
+      headers = { 'Authorization': self.authorization('POST', '/sessions/%s/runs' % sid), 'Content-Type': 'application/json' }
+    )
+    if response.status_code == 201:
+      return response.json()
+    else:
+      return response.status_code
+
+  def get_runs(self, sid):
+    self.set_expire()
+    response = requests.get(
+      self.endpoint('stom', '/sessions/%s/runs' % sid),
+      headers = { 'Authorization': self.authorization('GET', '/sessions/%s/runs' % sid)}
+    )
+    if response.status_code == 200:
+      return response.json()
+    else:
+      return response.status_code
