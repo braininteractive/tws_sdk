@@ -120,11 +120,12 @@ class Tws:
     )
     return response.status_code
     
-  def presigned_upload_form(self):
+  def presigned_upload_form(self, starts_with={}):
     self.set_expire()
-    response = requests.get(
+    response = requests.post(
       self.endpoint('stor', '/models/presign'),
-      headers = { 'Authorization': self.authorization('GET', '/models/presign') }
+      data=starts_with,
+      headers = { 'Authorization': self.authorization('POST', '/models/presign') }
     )
     if response.status_code == 200:
       return response.json()

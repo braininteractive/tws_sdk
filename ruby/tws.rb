@@ -93,11 +93,12 @@ class TWS
     response.code
   end
   
-  def presigned_upload_form
+  def presigned_upload_form starts_with={}
     t = expire
-    sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models/presign|
+    sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/models/presign|
     auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.get  "#{@stor_host}/api/v#{@api_version}/models/presign?expire=#{t}",
+    response = RestClient.post  "#{@stor_host}/api/v#{@api_version}/models/presign?expire=#{t}",
+                                {:starts_with => starts_with},
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
