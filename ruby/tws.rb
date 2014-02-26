@@ -93,18 +93,18 @@ class TWS
     response.code
   end
   
-  def presigned_upload_form starts_with={}
+  def presigned_upload_form starts_with={}, ip=""
     t = expire
     sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/models/presign|
     auth_header = "3WS #{@api_key}:#{sig}"
     response = RestClient.post  "#{@stor_host}/api/v#{@api_version}/models/presign?expire=#{t}",
-                                {:starts_with => starts_with},
+                                {:ip => ip, :starts_with => starts_with},
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
   
   def upload_model path, meta={}
-    presign = presigned_upload_form
+    presign = presigned_upload_form(starts_with, ip)
     begin
       upload_response = RestClient.post presign["form_action"],
                                         presign["form_fields"].merge({ :file => File.new(path), :multipart => true })

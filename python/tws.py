@@ -120,11 +120,11 @@ class Tws:
     )
     return response.status_code
     
-  def presigned_upload_form(self, starts_with={}):
+  def presigned_upload_form(self, starts_with={}, ip=""):
     self.set_expire()
     response = requests.post(
       self.endpoint('stor', '/models/presign'),
-      data=starts_with,
+      data={"starts_with": starts_with, "ip": ip},
       headers = { 'Authorization': self.authorization('POST', '/models/presign') }
     )
     if response.status_code == 200:
@@ -132,9 +132,9 @@ class Tws:
     else:
       return None
 
-  def upload_model(self, path, meta={}):
+  def upload_model(self, path, meta={}, starts_with={}, ip=""):
     self.set_expire()
-    presign = self.presigned_upload_form()
+    presign = self.presigned_upload_form(starts_with, ip)
     files = {'file': open(path, 'rb')}
     upload_response = requests.post(
       presign["form_action"],
