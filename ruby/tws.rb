@@ -177,22 +177,22 @@ class TWS
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
-  
-  def create_run id, code
+
+  def create_run id, platform, code
     t = expire
     sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/sessions/#{id}/runs|
     auth_header = "3WS #{@api_key}:#{sig}"
     response = RestClient.post  "#{@stom_host}/api/v#{@api_version}/sessions/#{id}/runs?expire=#{t}",
-                                {:code => code},
+                                {:platform => platform, :code => code},
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
   
-  def get_runs id
+  def get_runs id, platform=""
     t = expire
     sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/sessions/#{id}/runs|
     auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.get  "#{@stom_host}/api/v#{@api_version}/sessions/#{id}/runs?expire=#{t}",
+    response = RestClient.get  "#{@stom_host}/api/v#{@api_version}/sessions/#{id}/runs?expire=#{t}&platform=#{platform}",
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end

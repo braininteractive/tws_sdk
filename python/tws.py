@@ -193,11 +193,11 @@ class Tws:
     else:
       return response.status_code
 
-  def create_run(self, sid, code):
+  def create_run(self, sid, platform, code):
     self.set_expire()
     response = requests.post(
       self.endpoint('stom', '/sessions/%s/runs' % sid),
-      data = json.dumps({'code':code}),
+      data = json.dumps({'platform':platform, 'code':code}),
       headers = { 'Authorization': self.authorization('POST', '/sessions/%s/runs' % sid), 'Content-Type': 'application/json' }
     )
     if response.status_code == 201:
@@ -205,10 +205,10 @@ class Tws:
     else:
       return response.status_code
 
-  def get_runs(self, sid):
+  def get_runs(self, sid, platform=""):
     self.set_expire()
     response = requests.get(
-      self.endpoint('stom', '/sessions/%s/runs' % sid),
+      self.endpoint('stom', '/sessions/%s/runs' % sid, extra_params={'platform': platform}),
       headers = { 'Authorization': self.authorization('GET', '/sessions/%s/runs' % sid)}
     )
     if response.status_code == 200:
