@@ -122,6 +122,7 @@ class TWS
   end
   
   def get_link id, filename=""
+    filename ||= ""
     t = expire
     sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models/#{id}/download|
     "#{@stor_host}/api/v#{@api_version}/models/#{id}/download?expire=#{t}&key=#{@api_key}&signature=#{sig}&filename=#{CGI.escape(filename)}"
