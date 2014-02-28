@@ -18,4 +18,4 @@
 /solr/data
 /solr/pids
 
-__pycache__/*
+*__pycache__*
