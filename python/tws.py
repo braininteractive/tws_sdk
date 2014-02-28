@@ -143,11 +143,15 @@ class Tws:
     )
     return self.create_model(meta, presign['upload_id'])
     
-  def get_link(self, mid, filename=''):
+  def get_link(self, mid, filename=None):
     self.set_expire()
-    sig = self.signature(self.string_to_sign('GET', '/models/%s/download' % mid))
-    escaped_filename = urllib.parse.quote_plus(filename)
-    return "%s/api/v%s/models/%s/download?expire=%s&key=%s&signature=%s&filename=%s" % (self.stor_host, self.api_version, mid, self.expire, self.api_key, sig, escaped_filename)
+    if filename == None:
+      sig = self.signature(self.string_to_sign('GET', '/models/%s/download' % mid))
+      return "%s/api/v%s/models/%s/download?expire=%s&key=%s&signature=%s" % (self.stor_host, self.api_version, mid, self.expire, self.api_key, sig)
+    else:
+      escaped_filename = urllib.parse.quote(filename)
+      sig = self.signature(self.string_to_sign('GET', '/models/%s/%s' % (mid, escaped_filename)))
+      return "%s/api/v%s/models/%s/%s?expire=%s&key=%s&signature=%s" % (self.stor_host, self.api_version, mid, escaped_filename, self.expire, self.api_key, sig)
     
   def get_sessions(self):
     self.set_expire()

@@ -103,8 +103,8 @@ class TWS
     JSON.parse(response.body)
   end
   
-  def upload_model path, meta={}
-    presign = presigned_upload_form(starts_with, ip)
+  def upload_model path, opts={}
+    presign = presigned_upload_form(opts[:starts_with], opts[:ip])
     begin
       upload_response = RestClient.post presign["form_action"],
                                         presign["form_fields"].merge({ :file => File.new(path), :multipart => true })
@@ -116,15 +116,20 @@ class TWS
     sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/models|
     auth_header = "3WS #{@api_key}:#{sig}"
     response = RestClient.post  "#{@stor_host}/api/v#{@api_version}/models?expire=#{t}",
-                                {:meta => meta, :upload_id => presign["upload_id"]},
+                                {:meta => opts[:meta], :upload_id => presign["upload_id"]},
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
   
-  def get_link id, filename=""
+  def get_link id, filename=nil
     t = expire
-    sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models/#{id}/download|
-    "#{@stor_host}/api/v#{@api_version}/models/#{id}/download?expire=#{t}&key=#{@api_key}&signature=#{sig}&filename=#{CGI.escape(filename)}"
+    if filename.nil?
+      sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models/#{id}/download|
+      "#{@stor_host}/api/v#{@api_version}/models/#{id}/download?expire=#{t}&key=#{@api_key}&signature=#{sig}"
+    else
+      sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models/#{id}/#{URI.escape(filename)}|
+      "#{@stor_host}/api/v#{@api_version}/models/#{id}/#{URI.escape(filename)}?expire=#{t}&key=#{@api_key}&signature=#{sig}"
+    end
   end
   
   def request_tptx opts={}
