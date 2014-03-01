@@ -153,10 +153,10 @@ class Tws:
       sig = self.signature(self.string_to_sign('GET', '/models/%s/%s' % (mid, escaped_filename)))
       return "%s/api/v%s/models/%s/%s?expire=%s&key=%s&signature=%s" % (self.stor_host, self.api_version, mid, escaped_filename, self.expire, self.api_key, sig)
     
-  def get_sessions(self):
+  def get_sessions(self, state=''):
     self.set_expire()
     response = requests.get(
-      self.endpoint('stom', '/sessions'),
+      self.endpoint('stom', '/sessions', extra_params={"state":state}),
       headers = { 'Authorization': self.authorization('GET', '/sessions') }
     )
     if response.status_code == 200:
