@@ -37,7 +37,10 @@ class Tws:
     self.expire = None
   
   def signature(self, string_to_sign):
-    return urllib.parse.quote_plus(base64.b64encode(hmac.new(self.api_secret.encode(),string_to_sign.encode(),hashlib.sha1).digest()).decode())
+    try:
+      return urllib.parse.quote_plus(base64.b64encode(hmac.new(self.api_secret.encode(),string_to_sign.encode(),hashlib.sha1).digest()).decode())
+    except:
+      return urllib.quote_plus(base64.b64encode(hmac.new(self.api_secret.encode(),string_to_sign.encode(),hashlib.sha1).digest()).decode())
             
   def set_expire(self):
     self.expire = int(time.time()) + self.default_expire
@@ -49,7 +52,10 @@ class Tws:
     return "3WS %s:%s" % (self.api_key, self.signature(self.string_to_sign(method, endpoint)))
   
   def endpoint(self, host, path, extra_params={}):
-    extra = urllib.parse.urlencode(extra_params)
+    try:
+      extra = urllib.parse.urlencode(extra_params)
+    except:
+      extra = urllib.urlencode(extra_params)
     return "%s/api/v%s%s?expire=%s&%s" % (eval("self.%s_host" % host), self.api_version, path, self.expire, extra)
   
   # stid test authentication
@@ -149,7 +155,10 @@ class Tws:
       sig = self.signature(self.string_to_sign('GET', '/models/%s/download' % mid))
       return "%s/api/v%s/models/%s/download?expire=%s&key=%s&signature=%s" % (self.stor_host, self.api_version, mid, self.expire, self.api_key, sig)
     else:
-      escaped_filename = urllib.parse.quote(filename)
+      try:
+        escaped_filename = urllib.parse.quote(filename)
+      except:
+        escaped_filename = urllib.quote(filename)
       sig = self.signature(self.string_to_sign('GET', '/models/%s/%s' % (mid, escaped_filename)))
       return "%s/api/v%s/models/%s/%s?expire=%s&key=%s&signature=%s" % (self.stor_host, self.api_version, mid, escaped_filename, self.expire, self.api_key, sig)
     
