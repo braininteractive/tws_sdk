@@ -8,9 +8,9 @@ class TWS
   def initialize opts={}
     @api_key = opts[:api_key] || ENV['TWS_API_KEY']
     @api_secret = opts[:api_secret] || ENV['TWS_API_SECRET']
-    @stom_host = opts[:stom_host] || "https://stom.herokuapp.com"
-    @stor_host = opts[:stor_host] || "https://stor.herokuapp.com"
-    @stid_host = opts[:stid_host] || "https://stid.herokuapp.com"
+    @stom_host = opts[:stom_host] || "https://stom.dddws.com"
+    @stor_host = opts[:stor_host] || "https://stor.dddws.com"
+    @stid_host = opts[:stid_host] || "https://stid.dddws.com"
     @api_version = opts[:api_version] || 1
     @default_expire = 1.hour
   end

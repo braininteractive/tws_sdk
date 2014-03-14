@@ -10,9 +10,9 @@ import os
 
 class Tws:
   def __init__( self, api_key = None, api_secret = None,
-                stom_host = "https://stom.herokuapp.com",
-                stor_host = "https://stor.herokuapp.com",
-                stid_host = "https://stid.herokuapp.com",
+                stom_host = "https://stom.dddws.com",
+                stor_host = "https://stor.dddws.com",
+                stid_host = "https://stid.dddws.com",
                 api_version = 1 ):
 
     if not api_key:
