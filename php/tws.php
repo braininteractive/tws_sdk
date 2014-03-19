@@ -76,9 +76,9 @@ class Tws{
 		if($id == null) throw new Exception("id must be ommitted");
 
 		$t = $this->get_expire();
-		$endpoint = "/models";
+		$endpoint = "/models/" . $id;
 		$signature = $this->get_signature("GET", $endpoint, $t);
-		$request_url = $this->stor_host . "/api/v" . $this->api_version . $endpoint . "?id=" . $id . "&expire=" . $t;
+		$request_url = $this->stor_host . "/api/v" . $this->api_version . $endpoint . "?expire=" . $t;
 
 		$options = array('Authorization' => $this->get_auth_header($signature));
 		return $this->get_response("GET", $request_url, $options);
