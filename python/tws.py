@@ -229,3 +229,14 @@ class Tws:
       return response.json()
     else:
       return response.status_code
+      
+  def get_run(self, sid, rid):
+    self.set_expire()
+    response = requests.get(
+      self.endpoint('stom', '/sessions/%s/runs/%s' % (sid, rid)),
+      headers = { 'Authorization': self.authorization('GET', '/sessions/%s/runs/%s' % (sid, rid))}
+    )
+    if response.status_code == 200:
+      return response.json()
+    else:
+      return response.status_code

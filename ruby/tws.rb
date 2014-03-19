@@ -203,4 +203,13 @@ class TWS
     JSON.parse(response.body)
   end
   
+  def get_run session_id, run_id
+    t = expire
+    sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/sessions/#{session_id}/runs/#{run_id}|
+    auth_header = "3WS #{@api_key}:#{sig}"
+    response = RestClient.get  "#{@stom_host}/api/v#{@api_version}/sessions/#{session_id}/runs/#{run_id}?expire=#{t}",
+                                :Authorization => auth_header
+    JSON.parse(response.body)
+  end
+  
 end
