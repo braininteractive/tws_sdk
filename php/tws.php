@@ -230,6 +230,19 @@ class Tws{
 		return $this->get_response("GET", $request_url, $options);
 	}
 
+	function get_run($session_id = null, $id = null) {
+		if($session_id == null) throw new Exception("session id must be ommitted");
+		if($id == null) throw new Exception("run id must be ommitted");
+		
+		$t = $this->get_expire();
+		$endpoint = "/sessions/" . $session_id . "/runs/" . $id;
+		$signature = $this->get_signature("GET", $endpoint, $t);
+		$request_url = $this->stom_host . "/api/v" . $this->api_version . $endpoint . "?expire=" . $t;
+
+		$options = array("Authorization" => $this->get_auth_header($signature));
+		return $this->get_response("GET", $request_url, $options);
+	}	
+
 /**********************************************************
  Common
 ***********************************************************/
