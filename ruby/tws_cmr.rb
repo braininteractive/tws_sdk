@@ -1,4 +1,4 @@
-require 'tws'
+require_relative 'tws'
 
 class TWS_CMR < TWS
 	def initialize opts={}
@@ -38,7 +38,7 @@ class TWS_CMR < TWS
 			link = get_link stor_id, chunk['meta']['filename'] if link.nil?
 			@links[stor_id] = link
 			obj['url'] = link
-			puts link
+			#puts link
 		end
 
 		return cmr_object
