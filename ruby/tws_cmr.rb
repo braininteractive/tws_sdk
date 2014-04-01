@@ -19,8 +19,13 @@ class TWS_CMR < TWS
 	private :traverse_cmr
 
 	def get_CMR id
+#		get_link_time = 0.0
+#		start = Time.now
+		
 		m = get_model id
 
+#		puts "get_model: " + (Time.now - start).to_s
+		
 		return '' if m['meta'].nil?
 		stov_cmr = m['meta']['stov_cmr']
 		return '' if stov_cmr.nil?
@@ -30,17 +35,24 @@ class TWS_CMR < TWS
 			next unless obj.class == Hash
 			class_type = obj['class_type']
 			next if class_type.nil? || class_type != 'StovChunk'
+			stov_id = obj['id']
+			next if stov_id.nil?
 			stor_id = obj['stor_id']
 			next if stor_id.nil?
-			chunk = get_model stor_id
-			next if chunk['meta'].nil?
+	#		chunk = get_model stor_id
+	#		next if chunk['meta'].nil?
 			link = @links[stor_id]
-			link = get_link stor_id, chunk['meta']['filename'] if link.nil?
+	#		get_link_start = Time.now
+	#		link = get_link stor_id, chunk['meta']['filename'] if link.nil?
+	#		get_link_time += Time.now - get_link_start
+			link = get_link stor_id, (stov_id + '.ctm') if link.nil?
 			@links[stor_id] = link
 			obj['url'] = link
 			#puts link
 		end
 
+	#	puts "total: " + (Time.now - start).to_s
+	#	puts "get_link: " + get_link_time.to_s
 		return cmr_object
 	end
 end
