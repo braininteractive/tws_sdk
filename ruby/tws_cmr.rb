@@ -1,5 +1,7 @@
 require_relative 'tws'
 
+CHUNK_EXTENSION = ".tws"
+
 class TWS_CMR < TWS
 	def initialize opts={}
 		super opts
@@ -45,7 +47,11 @@ class TWS_CMR < TWS
 	#		get_link_start = Time.now
 	#		link = get_link stor_id, chunk['meta']['filename'] if link.nil?
 	#		get_link_time += Time.now - get_link_start
-			link = get_link stor_id, (stov_id + '.ctm') if link.nil?
+			if link.nil?
+				filename = obj['filename']
+				filename = stov_id + CHUNK_EXTENSION if filename.nil?
+				link = get_link stor_id, filename 
+			end
 			@links[stor_id] = link
 			obj['url'] = link
 			#puts link
