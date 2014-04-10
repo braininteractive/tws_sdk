@@ -30,12 +30,14 @@ class TWS_CMR < TWS
 		
 		return '' if m['meta'].nil?
 		stov_cmr = m['meta']['stov_cmr']
-		return '' if stov_cmr.nil?
+		return '' if stov_cmr.nil? || stov_cmr.empty?
+		
 		begin
 			cmr_object = JSON.parse(stov_cmr)
 		rescue
 			return ''
 		end
+		
 		traverse_cmr cmr_object do |obj|
 			next unless obj.class == Hash
 			class_type = obj['class_type']
