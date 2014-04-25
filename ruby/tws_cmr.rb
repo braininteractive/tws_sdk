@@ -8,14 +8,14 @@ class TWS_CMR < TWS
 		@links = Hash.new
 	end
 	
-	def traverse_cmr(object, *args, &block)
+	def traverse_cmr(object, &block)
 		return if object.nil?
-		block.call(object, args)
+		block.call(object)
 		
 		if object.class == Array
-			object.each {|x| traverse_cmr(x, args, &block) }
+			object.each {|x| traverse_cmr(x, &block) }
 		elsif object.class == Hash
-			object.each {|k, v| traverse_cmr(v, args, &block)}
+			object.each {|k, v| traverse_cmr(v, &block)}
 		end
 	end
 	private :traverse_cmr
