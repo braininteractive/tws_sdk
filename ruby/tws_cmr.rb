@@ -1,4 +1,7 @@
-require_relative 'tws' rescue nil
+begin
+	require_relative 'tws'
+rescue
+end
 
 CHUNK_EXTENSION = ".tws"
 
