@@ -5,23 +5,26 @@ require 'active_support/all'
 
 class TWS
   
+  attr_accessor :api_key, :api_secret, :stid_host, :stor_host, :stom_host, :stopp_host, :api_version, :default_expire
+  
   def initialize opts={}
-    @api_key = opts[:api_key] || ENV['TWS_API_KEY']
-    @api_secret = opts[:api_secret] || ENV['TWS_API_SECRET']
-    @stom_host = opts[:stom_host] || "https://stom.dddws.com"
-    @stor_host = opts[:stor_host] || "https://stor.dddws.com"
-    @stid_host = opts[:stid_host] || "https://stid.dddws.com"
-    @api_version = opts[:api_version] || 1
-    @default_expire = 1.hour
+    self.api_key = opts[:api_key] || ENV['TWS_API_KEY']
+    self.api_secret = opts[:api_secret] || ENV['TWS_API_SECRET']
+    self.stopp_host = opts[:stopp_host] || "https://stopp.dddws.com"
+    self.stom_host = opts[:stom_host] || "https://stom.dddws.com"
+    self.stor_host = opts[:stor_host] || "https://stor.dddws.com"
+    self.stid_host = opts[:stid_host] || "https://stid.dddws.com"
+    self.api_version = opts[:api_version] || 1
+    self.default_expire = 1.hour
   end
 
   def signature string_to_sign
-    raise "api_secret is not set" if @api_secret.blank?
+    raise "api_secret is not set" if api_secret.blank?
     CGI.escape(
       Base64.encode64(
         OpenSSL::HMAC.digest(
           OpenSSL::Digest::Digest.new('sha1'),
-          @api_secret,
+          api_secret,
           string_to_sign
         )
       ).strip
@@ -29,14 +32,14 @@ class TWS
   end
   
   def expire
-    (Time.now + @default_expire).to_i
+    (Time.now + default_expire).to_i
   end
   
   def authenticate
     t = expire
-    sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/authenticate|
-    response = RestClient.post "#{@stid_host}/api/v#{@api_version}/authenticate", {
-      :key => @api_key,
+    sig = signature %|POST\n\n#{t}\n/api/v#{api_version}/authenticate|
+    response = RestClient.post "#{stid_host}/api/v#{api_version}/authenticate", {
+      :key => api_key,
       :signature => sig,
       :method => 'POST',
       :url => '/api/v1/authenticate',
@@ -48,9 +51,9 @@ class TWS
   
   def create_model meta={}, upload_id=nil
     t = expire
-    sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/models|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.post  "#{@stor_host}/api/v#{@api_version}/models?expire=#{t}",
+    sig = signature %|POST\n\n#{t}\n/api/v#{api_version}/models|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.post  "#{stor_host}/api/v#{api_version}/models?expire=#{t}",
                                 {:meta => meta, :upload_id => upload_id},
                                 :Authorization => auth_header
     JSON.parse(response.body)
@@ -58,27 +61,27 @@ class TWS
   
   def get_model id
     t = expire
-    sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models/#{id}|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.get  "#{@stor_host}/api/v#{@api_version}/models/#{id}?expire=#{t}",
+    sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/models/#{id}|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.get  "#{stor_host}/api/v#{api_version}/models/#{id}?expire=#{t}",
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
   
   def get_models params={}
     t = expire
-    sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.get  "#{@stor_host}/api/v#{@api_version}/models?expire=#{t}&#{params.to_query}",
+    sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/models|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.get  "#{stor_host}/api/v#{api_version}/models?expire=#{t}&#{params.to_query}",
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
   
   def update_model id, meta={}
     t = expire
-    sig = signature %|PUT\n\n#{t}\n/api/v#{@api_version}/models/#{id}|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.put  "#{@stor_host}/api/v#{@api_version}/models/#{id}?expire=#{t}",
+    sig = signature %|PUT\n\n#{t}\n/api/v#{api_version}/models/#{id}|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.put  "#{stor_host}/api/v#{api_version}/models/#{id}?expire=#{t}",
                                 {:meta => meta},
                                 :Authorization => auth_header
     JSON.parse(response.body)
@@ -86,18 +89,18 @@ class TWS
   
   def delete_model id
     t = expire
-    sig = signature %|DELETE\n\n#{t}\n/api/v#{@api_version}/models/#{id}|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.delete  "#{@stor_host}/api/v#{@api_version}/models/#{id}?expire=#{t}",
+    sig = signature %|DELETE\n\n#{t}\n/api/v#{api_version}/models/#{id}|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.delete  "#{stor_host}/api/v#{api_version}/models/#{id}?expire=#{t}",
                                 :Authorization => auth_header
     response.code
   end
   
   def presigned_upload_form starts_with={}, ip=""
     t = expire
-    sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/models/presign|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.post  "#{@stor_host}/api/v#{@api_version}/models/presign?expire=#{t}",
+    sig = signature %|POST\n\n#{t}\n/api/v#{api_version}/models/presign|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.post  "#{stor_host}/api/v#{api_version}/models/presign?expire=#{t}",
                                 {:ip => ip, :starts_with => starts_with},
                                 :Authorization => auth_header
     JSON.parse(response.body)
@@ -113,9 +116,9 @@ class TWS
     end
     
     t = expire
-    sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/models|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.post  "#{@stor_host}/api/v#{@api_version}/models?expire=#{t}",
+    sig = signature %|POST\n\n#{t}\n/api/v#{api_version}/models|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.post  "#{stor_host}/api/v#{api_version}/models?expire=#{t}",
                                 {:meta => opts[:meta], :upload_id => presign["upload_id"]},
                                 :Authorization => auth_header
     JSON.parse(response.body)
@@ -124,11 +127,11 @@ class TWS
   def get_link id, filename=nil
     t = expire
     if filename.nil?
-      sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models/#{id}/download|
-      "#{@stor_host}/api/v#{@api_version}/models/#{id}/download?expire=#{t}&key=#{@api_key}&signature=#{sig}"
+      sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/models/#{id}/download|
+      "#{stor_host}/api/v#{api_version}/models/#{id}/download?expire=#{t}&key=#{api_key}&signature=#{sig}"
     else
-      sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/models/#{id}/#{URI.escape(filename)}|
-      "#{@stor_host}/api/v#{@api_version}/models/#{id}/#{URI.escape(filename)}?expire=#{t}&key=#{@api_key}&signature=#{sig}"
+      sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/models/#{id}/#{URI.escape(filename)}|
+      "#{stor_host}/api/v#{api_version}/models/#{id}/#{URI.escape(filename)}?expire=#{t}&key=#{api_key}&signature=#{sig}"
     end
   end
   
@@ -149,27 +152,27 @@ class TWS
   
   def get_sessions params={}
     t = expire
-    sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/sessions|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.get  "#{@stom_host}/api/v#{@api_version}/sessions?expire=#{t}&#{params.to_query}",
+    sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/sessions|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.get  "#{stom_host}/api/v#{api_version}/sessions?expire=#{t}&#{params.to_query}",
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
   
   def get_session id
     t = expire
-    sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/sessions/#{id}|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.get  "#{@stom_host}/api/v#{@api_version}/sessions/#{id}?expire=#{t}",
+    sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/sessions/#{id}|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.get  "#{stom_host}/api/v#{api_version}/sessions/#{id}?expire=#{t}",
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
   
   def create_session timeout=60, engine_version='20140424'
     t = expire
-    sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/sessions|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.post  "#{@stom_host}/api/v#{@api_version}/sessions?expire=#{t}",
+    sig = signature %|POST\n\n#{t}\n/api/v#{api_version}/sessions|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.post  "#{stom_host}/api/v#{api_version}/sessions?expire=#{t}",
                                 {:timeout => timeout, :engine_version => engine_version},
                                 :Authorization => auth_header
     JSON.parse(response.body)
@@ -177,18 +180,18 @@ class TWS
   
   def close_session id
     t = expire
-    sig = signature %|DELETE\n\n#{t}\n/api/v#{@api_version}/sessions/#{id}|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.delete  "#{@stom_host}/api/v#{@api_version}/sessions/#{id}?expire=#{t}",
+    sig = signature %|DELETE\n\n#{t}\n/api/v#{api_version}/sessions/#{id}|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.delete  "#{stom_host}/api/v#{api_version}/sessions/#{id}?expire=#{t}",
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
 
   def create_run id, platform, code
     t = expire
-    sig = signature %|POST\n\n#{t}\n/api/v#{@api_version}/sessions/#{id}/runs|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.post  "#{@stom_host}/api/v#{@api_version}/sessions/#{id}/runs?expire=#{t}",
+    sig = signature %|POST\n\n#{t}\n/api/v#{api_version}/sessions/#{id}/runs|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.post  "#{stom_host}/api/v#{api_version}/sessions/#{id}/runs?expire=#{t}",
                                 {:platform => platform, :code => code},
                                 :Authorization => auth_header
     JSON.parse(response.body)
@@ -196,19 +199,31 @@ class TWS
   
   def get_runs id, platform=""
     t = expire
-    sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/sessions/#{id}/runs|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.get  "#{@stom_host}/api/v#{@api_version}/sessions/#{id}/runs?expire=#{t}&platform=#{platform}",
+    sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/sessions/#{id}/runs|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.get  "#{stom_host}/api/v#{api_version}/sessions/#{id}/runs?expire=#{t}&platform=#{platform}",
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
   
   def get_run session_id, run_id
     t = expire
-    sig = signature %|GET\n\n#{t}\n/api/v#{@api_version}/sessions/#{session_id}/runs/#{run_id}|
-    auth_header = "3WS #{@api_key}:#{sig}"
-    response = RestClient.get  "#{@stom_host}/api/v#{@api_version}/sessions/#{session_id}/runs/#{run_id}?expire=#{t}",
+    sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/sessions/#{session_id}/runs/#{run_id}|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.get  "#{stom_host}/api/v#{api_version}/sessions/#{session_id}/runs/#{run_id}?expire=#{t}",
                                 :Authorization => auth_header
+    JSON.parse(response.body)
+  end
+  
+  # STOPP
+  
+  def get_printers params={}
+    response = RestClient.get "#{stopp_host}/api/v#{api_version}/printers?#{params.to_query}"
+    JSON.parse(response.body)
+  end
+  
+  def get_materials params={}
+    response = RestClient.get "#{stopp_host}/api/v#{api_version}/materials?#{params.to_query}"
     JSON.parse(response.body)
   end
   

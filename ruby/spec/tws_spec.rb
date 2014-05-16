@@ -9,15 +9,18 @@ load '../tws.rb'
 describe TWS do
 
   before(:all) do
-    @tws = TWS.new  :stid_host => "https://stid-staging.herokuapp.com",
+    @tws = TWS.new  :api_key => ENV['TWS_STAGING_KEY'],
+                    :api_secret => ENV['TWS_STAGING_SECRET'],
+                    :stid_host => "https://stid-staging.herokuapp.com",
                     :stor_host => "https://stor-staging.herokuapp.com",
-                    :stom_host => "https://stom-staging.herokuapp.com"
+                    :stom_host => "https://stom-staging.herokuapp.com",
+                    :stopp_host => "https://stopp-staging.herokuapp.com"
   end
   
   describe "api key and secret" do
     it "need to be set" do
-      ENV['TWS_API_KEY'].should_not be_blank
-      ENV['TWS_API_SECRET'].should_not be_blank
+      ENV['TWS_STAGING_KEY'].should_not be_blank
+      ENV['TWS_STAGING_SECRET'].should_not be_blank
     end
   end
   
@@ -114,7 +117,16 @@ describe TWS do
       end
       
     end
+  end
+  
+  describe "STOPP" do
+    it "gets printers" do
+      @tws.get_printers.should_not be_blank
+    end
     
+    it "gets materials" do
+      @tws.get_materials.should_not be_blank
+    end
   end
   
 end
