@@ -98,9 +98,29 @@ describe TWS do
       @tws.get_sessions.first["id"] == @s["id"]
     end
     
-    describe "Run" do
+    describe "Run with blender" do
       before(:all) do
         @run = @tws.create_run(@s["id"], "blender", "print('3WS rocks hard!')")
+        sleep(2)
+      end
+      
+      it "runs a code" do
+        @run["id"].should_not be_blank
+      end
+    
+      it "gets a run" do
+        @tws.get_run(@s["id"], @run["id"])["result"].should include("3WS rocks hard!")
+      end
+      
+      it "gets runs" do
+        @tws.get_runs(@s["id"]).should_not be_empty
+      end
+      
+    end
+    
+    describe "Run with adp" do
+      before(:all) do
+        @run = @tws.create_run(@s["id"], "adp", "print('3WS rocks hard!')")
         sleep(2)
       end
       
