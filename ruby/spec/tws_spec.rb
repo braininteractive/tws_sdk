@@ -101,7 +101,7 @@ describe TWS do
     describe "Run with blender" do
       before(:all) do
         @run = @tws.create_run(@s["id"], "blender", "print('3WS rocks hard!')")
-        sleep(2)
+        sleep(3)
       end
       
       it "runs a code" do
@@ -121,7 +121,7 @@ describe TWS do
     describe "Run with adp" do
       before(:all) do
         @run = @tws.create_run(@s["id"], "adp", "print('3WS rocks hard!')")
-        sleep(2)
+        sleep(3)
       end
       
       it "runs a code" do
