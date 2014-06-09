@@ -101,7 +101,7 @@ describe TWS do
     describe "Run with blender" do
       before(:all) do
         @run = @tws.create_run(@s["id"], "blender", "print('3WS rocks hard!')")
-        sleep(2)
+        sleep(3)
       end
       
       it "runs a code" do
@@ -116,7 +116,7 @@ describe TWS do
         @tws.get_runs(@s["id"]).should_not be_empty
       end
     end
-  
+
     def run_a_code(code_fn, seconds=5)
       @run = @tws.create_run(@s["id"], @default_platform, File.read(code_fn))
       sleep(seconds)

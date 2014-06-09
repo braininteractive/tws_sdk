@@ -216,7 +216,6 @@ class TWS
   end
   
   # STOPP
-  
   def get_printers params={}
     response = RestClient.get "#{stopp_host}/api/v#{api_version}/printers?#{params.to_query}"
     JSON.parse(response.body)
