@@ -101,7 +101,7 @@ describe TWS do
     describe "Run with blender" do
       before(:all) do
         @run = @tws.create_run(@s["id"], "blender", "print('3WS rocks hard!')")
-        sleep(3)
+        sleep(2)
       end
       
       it "runs a code" do
@@ -117,13 +117,13 @@ describe TWS do
       end
     end
 
-    def run_a_code(code_fn, seconds=5)
-      @run = @tws.create_run(@s["id"], @default_platform, File.read(code_fn))
-      sleep(seconds)
-      return JSON.parse(@tws.get_run(@s["id"], @run["id"])["result"])
-    end
-
     describe "Test validator" do
+      def run_a_code(code_fn, seconds=5)
+        @run = @tws.create_run(@s["id"], @default_platform, File.read(code_fn))
+        sleep(seconds)
+        return JSON.parse(@tws.get_run(@s["id"], @run["id"])["result"])
+      end
+
       def is_valid_results?(results, num_units, num_processes)
         return false unless results.kind_of?(Array) and results.length == num_units
         results.each do |result|
