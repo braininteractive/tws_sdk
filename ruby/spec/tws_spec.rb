@@ -83,7 +83,7 @@ describe TWS do
   
   describe "STOM" do
     before(:all) do
-      @s = @tws.create_session 60, "latest"
+      @s = @tws.create_session 300, "latest"
     end
     
     it "creates a session" do
@@ -115,30 +115,41 @@ describe TWS do
       it "gets runs" do
         @tws.get_runs(@s["id"]).should_not be_empty
       end
-      
     end
-    
-    describe "Run with adp" do
+  
+    def run_a_code(code_fn, seconds=5)
+      @run = @tws.create_run(@s["id"], @default_platform, File.read(code_fn))
+      sleep(seconds)
+      return JSON.parse(@tws.get_run(@s["id"], @run["id"])["result"])
+    end
+
+    describe "Test validator" do
+      def is_valid_results?(results, num_units, num_processes)
+        return false unless results.kind_of?(Array) and results.length == num_units
+        results.each do |result|
+          processes = result['validation']
+          return false unless processes.length == num_processes
+          processes.each { |process| return false unless process.has_key?('valid') }
+        end
+        return true
+      end
+
       before(:all) do
-        @run = @tws.create_run(@s["id"], "adp", "print('3WS rocks hard!')")
-        sleep(2)
+        @default_platform = 'blender'
       end
-      
-      it "runs a code" do
-        @run["id"].should_not be_blank
+
+      it "runs with single unit and process" do
+        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 5)
+        is_valid_results?(results, 1, 1).should be_true
       end
-    
-      it "gets a run" do
-        @tws.get_run(@s["id"], @run["id"])["result"].should include("3WS rocks hard!")
+
+      it "runs with multiple units and processes" do
+        results = run_a_code('codes/validator.unit_x3_and_pp_x3.py', 10)
+        is_valid_results?(results, 3, 3).should be_true
       end
-      
-      it "gets runs" do
-        @tws.get_runs(@s["id"]).should_not be_empty
-      end
-      
     end
   end
-  
+
   describe "STOPP" do
     it "gets printers" do
       @tws.get_printers.should_not be_blank
@@ -148,5 +159,5 @@ describe TWS do
       @tws.get_materials.should_not be_blank
     end
   end
-  
+
 end
