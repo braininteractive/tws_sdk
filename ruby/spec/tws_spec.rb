@@ -129,7 +129,7 @@ describe TWS do
       end
 
       it "runs ADP mesh creation" do
-        results = run_a_code('codes/adp.mesh_creation.py', 3)
+        results = run_a_code('codes/adp.mesh_creation.py', 5)
         results['numPoints'].should == 3
         results['numTriangles'].should == 1
       end
@@ -151,13 +151,13 @@ describe TWS do
       end
 
       it "runs with single unit and process" do
-        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 5)
-        is_valid_results?(results, 1, 1).should be_true
+        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 8)
+        is_valid_results?(results, 1, 1).should == true
       end
 
       it "runs with multiple units and processes" do
-        results = run_a_code('codes/validator.unit_x3_and_pp_x3.py', 10)
-        is_valid_results?(results, 3, 3).should be_true
+        results = run_a_code('codes/validator.unit_x3_and_pp_x3.py', 12)
+        is_valid_results?(results, 3, 3).should == true
       end
     end
 
@@ -174,17 +174,17 @@ describe TWS do
 
       it "runs render_360()" do
         results = run_a_code('codes/renderer.render_360.py', 8)
-        is_valid_results?(results, 3).should be_true
+        is_valid_results?(results, 3).should == true
       end
 
       it "runs render_tp()" do
         results = run_a_code('codes/renderer.render_tp.py', 10)
-        is_valid_results?(results, 4).should be_true
+        is_valid_results?(results, 4).should == true
       end
 
       it "runs render_custom()" do
         results = run_a_code('codes/renderer.render_custom.py', 5)
-        is_valid_results?(results, 2).should be_true
+        is_valid_results?(results, 2).should == true
       end
     end
   end
