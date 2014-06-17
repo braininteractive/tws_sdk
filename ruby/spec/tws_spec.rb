@@ -98,7 +98,7 @@ describe TWS do
       @tws.get_sessions.first["id"] == @s["id"]
     end
     
-    describe "Run with blender" do
+    describe "run with blender" do
       before(:all) do
         @run = @tws.create_run(@s["id"], "blender", "print('3WS rocks hard!')")
         sleep(2)
@@ -117,13 +117,25 @@ describe TWS do
       end
     end
 
-    describe "Test validator" do
-      def run_a_code(code_fn, seconds=5)
-        @run = @tws.create_run(@s["id"], @default_platform, File.read(code_fn))
-        sleep(seconds)
-        return JSON.parse(@tws.get_run(@s["id"], @run["id"])["result"])
+    def run_a_code(code_fn, seconds=5)
+      @run = @tws.create_run(@s["id"], @default_platform, File.read(code_fn))
+      sleep(seconds)
+      return JSON.parse(@tws.get_run(@s["id"], @run["id"])["result"])
+    end
+
+    describe "test ADP" do
+      before(:all) do
+        @default_platform = 'blender'
       end
 
+      it "runs ADP mesh creation" do
+        results = run_a_code('codes/adp.mesh_creation.py', 3)
+        results['numPoints'].should == 3
+        results['numTriangles'].should == 1
+      end
+    end
+
+    describe "test validator" do
       def is_valid_results?(results, num_units, num_processes)
         return false unless results.kind_of?(Array) and results.length == num_units
         results.each do |result|
@@ -146,6 +158,33 @@ describe TWS do
       it "runs with multiple units and processes" do
         results = run_a_code('codes/validator.unit_x3_and_pp_x3.py', 10)
         is_valid_results?(results, 3, 3).should be_true
+      end
+    end
+
+    describe "test renderer" do
+      def is_valid_results?(results, num_renders)
+        return false unless results['result']
+        return false unless results['outfiles'].length == num_renders
+        return true
+      end
+
+      before(:all) do
+        @default_platform = 'blender'
+      end
+
+      it "runs render_360()" do
+        results = run_a_code('codes/renderer.render_360.py', 8)
+        is_valid_results?(results, 3).should be_true
+      end
+
+      it "runs render_tp()" do
+        results = run_a_code('codes/renderer.render_tp.py', 10)
+        is_valid_results?(results, 4).should be_true
+      end
+
+      it "runs render_custom()" do
+        results = run_a_code('codes/renderer.render_custom.py', 5)
+        is_valid_results?(results, 2).should be_true
       end
     end
   end
