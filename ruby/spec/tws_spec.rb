@@ -129,7 +129,7 @@ describe TWS do
       end
 
       it "runs ADP mesh creation" do
-        results = run_a_code('codes/adp.mesh_creation.py', 5)
+        results = run_a_code('codes/adp.mesh_creation.py', 8)
         results['numPoints'].should == 3
         results['numTriangles'].should == 1
       end
@@ -151,12 +151,12 @@ describe TWS do
       end
 
       it "runs with single unit and process" do
-        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 8)
+        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 10)
         is_valid_results?(results, 1, 1).should == true
       end
 
       it "runs with multiple units and processes" do
-        results = run_a_code('codes/validator.unit_x3_and_pp_x3.py', 12)
+        results = run_a_code('codes/validator.unit_x3_and_pp_x3.py', 15)
         is_valid_results?(results, 3, 3).should == true
       end
     end
