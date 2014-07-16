@@ -187,7 +187,20 @@ describe TWS do
         is_valid_results?(results, 2).should == true
       end
     end
-  end
+
+    describe "testing CMR conversion" do
+      before(:all) do
+        @default_platform = 'blender'
+      end
+
+      it "runs with STL mesh" do
+        results = run_a_code('codes/cmr.meshconv.py', 30)
+        results['STORID'].should == ['e3cdba7295']
+        results['CMR'].should_not be_blank
+        results['CMR']['e3cdba7295'].should_not be_blank
+      end
+    end
+  end 
 
   describe "STOPP" do
     it "gets printers" do

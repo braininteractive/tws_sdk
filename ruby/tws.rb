@@ -217,12 +217,26 @@ class TWS
   
   # STOPP
   def get_printers params={}
-    response = RestClient.get "#{stopp_host}/api/v#{api_version}/printers?#{params.to_query}"
+    t = expire
+    sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/printers|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.get "#{stopp_host}/api/v#{api_version}/printers?expire=#{t}&#{params.to_query}", :Authorization => auth_header
     JSON.parse(response.body)
   end
   
   def get_materials params={}
-    response = RestClient.get "#{stopp_host}/api/v#{api_version}/materials?#{params.to_query}"
+    t = expire
+    sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/materials|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.get "#{stopp_host}/api/v#{api_version}/materials?expire=#{t}&#{params.to_query}", :Authorization => auth_header
+    JSON.parse(response.body)
+  end
+  
+  def get_properties params={}
+    t = expire
+    sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/properties|
+    auth_header = "3WS #{api_key}:#{sig}"
+    response = RestClient.get "#{stopp_host}/api/v#{api_version}/properties?expire=#{t}&#{params.to_query}", :Authorization => auth_header
     JSON.parse(response.body)
   end
   
