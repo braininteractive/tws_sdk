@@ -8,17 +8,16 @@ CHUNK_EXTENSION = ".tws"
 class TWS_CMR < TWS
 	def initialize opts={}
 		super opts
-		@links = Hash.new
 	end
 	
-	def traverse_cmr(object, &block)
+	def traverse_cmr(object, cache, &block)
 		return if object.nil?
 		block.call(object)
 		
 		if object.class == Array
-			object.each {|x| traverse_cmr(x, &block) }
+			object.each {|x| traverse_cmr(x, cache, &block) }
 		elsif object.class == Hash
-			object.each {|k, v| traverse_cmr(v, &block)}
+			object.each {|k, v| traverse_cmr(v, cache, &block)}
 		end
 	end
 	private :traverse_cmr
@@ -40,8 +39,10 @@ class TWS_CMR < TWS
 		rescue
 			return ''
 		end
+
+		links = Hash.new
 		
-		traverse_cmr cmr_object do |obj|
+		traverse_cmr cmr_object, links do |obj|
 			next unless obj.class == Hash
 			class_type = obj['class_type']
 			next if class_type.nil? || class_type != 'StovChunk'
@@ -51,7 +52,7 @@ class TWS_CMR < TWS
 			next if stor_id.nil?
 	#		chunk = get_model stor_id
 	#		next if chunk['meta'].nil?
-			link = @links[stor_id]
+			link = links[stor_id]
 	#		get_link_start = Time.now
 	#		link = get_link stor_id, chunk['meta']['filename'] if link.nil?
 	#		get_link_time += Time.now - get_link_start
@@ -60,7 +61,7 @@ class TWS_CMR < TWS
 				filename = stov_id + CHUNK_EXTENSION if filename.nil?
 				link = get_link stor_id, filename 
 			end
-			@links[stor_id] = link
+			links[stor_id] = link
 			obj['url'] = link
 			#puts link
 		end
