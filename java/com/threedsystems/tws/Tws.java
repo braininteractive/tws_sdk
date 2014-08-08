@@ -12,7 +12,7 @@ public class Tws {
 	protected static String stid_host = "https://stid.dddws.com";
 	protected static String stom_host = "https://stom.dddws.com";
 	protected static String stor_host = "https://stor.dddws.com";
-	protected static int default_expire = 1800;
+	protected static int default_expire = 3600;
 	protected static int default_timeout = 600;
 	
 	public enum ContentType {
@@ -33,10 +33,10 @@ public class Tws {
 		Tws.api_secret = "28a0f288a475cf0eddfa4f9939a122f5";
 		
 		if(Tws.api_key == null)
-			throw new Exception("api_key must be ommitted");
+			throw new Exception("api_key cannot be omitted");
 		
 		if(Tws.api_secret == null)
-			throw new Exception("api_secret must be ommitted");
+			throw new Exception("api_secret cannot be omitted");
 	}
 	
 	public String Authenticate() {

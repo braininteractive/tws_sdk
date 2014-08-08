@@ -7,7 +7,7 @@ class Tws{
 	var $stid_host = "https://stid.dddws.com";
 	var $stom_host = "https://stom.dddws.com";
 	var $stor_host = "https://stor.dddws.com";
-	var $default_expire = 1800;
+	var $default_expire = 3600;
 	var $default_timeout = 600;	
 
 /******************************************************************************
@@ -27,8 +27,8 @@ class Tws{
 		else
 			$this->api_secret = $_ENV["TWS_API_SECRET"];
 
-		if($this->api_key == null) throw new Exception("api_key must be ommitted");
-		if($this->api_secret == null) throw new Exception("api_secret must be ommitted");
+		if($this->api_key == null) throw new Exception("api_key cannot be omitted");
+		if($this->api_secret == null) throw new Exception("api_secret cannot be omitted");
 	}
 
 	function authenticate(){
@@ -137,10 +137,10 @@ class Tws{
 		return $this->get_response("POST", $request_url, $options);
 	}
 
-	function get_link($id = null, $filename = null) {
+	function get_link($id = null, $filename = null, $expire_sec = null) {
 		if($id == null) throw new Exception("id must be ommitted");
 
-		$t = $this->get_expire();
+		$t = $this->get_expire($expire_sec);
 		$endpoint = "/models/" . $id;
 		
 		if($filename == null) {
@@ -256,8 +256,9 @@ class Tws{
 		return rawurlencode(base64_encode(hash_hmac('sha1', $base_string, $this->api_secret, true)));
 	}
 
-	private function get_expire() {
-		return time() + $this->default_expire;
+	private function get_expire($expire_sec = null) {
+		if($expire_sec == null) $expire_sec = $this->default_expire;
+		return time() + $expire_sec;
 	}
 
 	private function get_auth_header($signature) {

@@ -158,9 +158,9 @@ public class StorClient extends Tws{
 		return TwsUtil.GetHttpResponse(HttpMethod.POST, ContentType.JSON, strRequestUrl, options);
 	}
 	
-	public String GetLink(String strModelId, String strFileName) {
+	public String GetLink(String strModelId, String strFileName, int expire_sec) {
 		
-		int iExpire = TwsUtil.GetExpire();
+		int iExpire = TwsUtil.GetExpire(expire_sec);
 		String strEndpoint = "/models/" + strModelId;
 		String strSignature = null;
 		String strUri = null;
@@ -174,6 +174,10 @@ public class StorClient extends Tws{
 		}
 
 		return strUri;		
+	}
+
+	public String GetLink(String strModelId, String strFileName) {
+		return GetLink(strModelId, "", 0);
 	}
 	
 	public String GetLink(String strModelId) {

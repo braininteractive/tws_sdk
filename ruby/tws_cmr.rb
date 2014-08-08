@@ -22,7 +22,7 @@ class TWS_CMR < TWS
 	end
 	private :traverse_cmr
 
-	def get_CMR id
+	def get_CMR id, expire = nil
 #		get_link_time = 0.0
 #		start = Time.now
 		
@@ -59,7 +59,7 @@ class TWS_CMR < TWS
 			if link.nil?
 				filename = obj['filename']
 				filename = stov_id + CHUNK_EXTENSION if filename.nil?
-				link = get_link stor_id, filename 
+				link = get_link stor_id, filename, expire
 			end
 			links[stor_id] = link
 			obj['url'] = link

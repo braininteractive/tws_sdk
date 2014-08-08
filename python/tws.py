@@ -42,8 +42,10 @@ class Tws:
     except:
       return urllib.quote_plus(base64.b64encode(hmac.new(self.api_secret.encode(),string_to_sign.encode(),hashlib.sha1).digest()).decode())
             
-  def set_expire(self):
-    self.expire = int(time.time()) + self.default_expire
+  def set_expire(self, expire_sec = None):
+    if expire_sec is None:
+      expire_sec = self.default_expire
+    self.expire = int(time.time()) + expire_sec
   
   def string_to_sign(self, method, endpoint):
     return "%s\n\n%d\n/api/v%d%s" % (method, self.expire, self.api_version, endpoint)
@@ -149,8 +151,8 @@ class Tws:
     )
     return self.create_model(meta, presign['upload_id'])
     
-  def get_link(self, mid, filename=None):
-    self.set_expire()
+  def get_link(self, mid, filename=None, expire_sec=None):
+    self.set_expire(expire_sec)
     if filename == None:
       sig = self.signature(self.string_to_sign('GET', '/models/%s/download' % mid))
       return "%s/api/v%s/models/%s/download?expire=%s&key=%s&signature=%s" % (self.stor_host, self.api_version, mid, self.expire, self.api_key, sig)

@@ -31,8 +31,9 @@ class TWS
     )
   end
   
-  def expire
-    (Time.now + default_expire).to_i
+  def expire t = nil
+    t = default_expire if t.nil?
+    (Time.now + t).to_i
   end
   
   def authenticate
@@ -124,8 +125,8 @@ class TWS
     JSON.parse(response.body)
   end
   
-  def get_link id, filename=nil
-    t = expire
+  def get_link id, filename=nil, expire_time=nil
+    t = expire expire_second
     if filename.nil?
       sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/models/#{id}/download|
       "#{stor_host}/api/v#{api_version}/models/#{id}/download?expire=#{t}&key=#{api_key}&signature=#{sig}"

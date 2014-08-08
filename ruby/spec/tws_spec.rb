@@ -70,6 +70,12 @@ describe TWS do
         RestClient.get(link).headers[:content_length].should == @uploaded_model["meta"]["filesize"]
       end
       
+      it "gets a link to download the model with specific expiration" do
+        link = @tws.get_link(@uploaded_model["id"], nil, 36000)
+        link.should include(@uploaded_model["id"])
+        RestClient.get(link).headers[:content_length].should == @uploaded_model["meta"]["filesize"]
+      end
+      
       it "deletes a model" do
         @tws.delete_model(@uploaded_model["id"]).should == 204
       end

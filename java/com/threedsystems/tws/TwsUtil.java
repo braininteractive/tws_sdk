@@ -80,11 +80,18 @@ public class TwsUtil extends Tws{
 		return "3WS " + Tws.api_key + ":" + strSignature;
 	}
 	
-	protected static int GetExpire() {
+	protected static int GetExpire(int expire_sec) {
+		if (expire_sec == 0)
+			expire_sec = Tws.default_expire;
+		
 		Date date = new Date();
 		Timestamp timestamp = new Timestamp(date.getTime());
 		
-		return (int) (timestamp.getTime()/1000) + Tws.default_expire;
+		return (int) (timestamp.getTime()/1000) + expire_sec;
+	}
+
+	protected static int GetExpire() {
+		return GetExpire(Tws.default_expire);
 	}
 	
 	protected static String GetHttpResponse(HttpMethod Method, ContentType Type, String strUrl, HashMap<String, Object>options) {
