@@ -59,7 +59,7 @@ public class StomClient extends Tws{
 		{
 			options.put("Authorization", TwsUtil.GetAuthHeader(strSignature));
 			options.put("timeout", timeout);
-			options.put("engine_version", strEngineVersion)
+			options.put("engine_version", strEngineVersion);
 		}
 
 		return TwsUtil.GetHttpResponse(HttpMethod.POST, ContentType.JSON, strRequestUrl, options);
