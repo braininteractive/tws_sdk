@@ -181,13 +181,13 @@ class Tws{
 		return $this->get_response("GET", $request_url, $options);
 	}
 
-	function create_session($timeout = 60) {
+	function create_session($timeout = 60, $engine_version = "latest") {
 		$t = $this->get_expire();
 		$endpoint = "/sessions";
 		$signature = $this->get_signature("POST", $endpoint, $t);
 		$request_url = $this->stom_host . "/api/v" . $this->api_version . $endpoint . "?expire=" . $t;
 
-		$options = array("Authorization" => $this->get_auth_header($signature),"timeout" => $timeout);
+		$options = array("Authorization" => $this->get_auth_header($signature), "timeout" => $timeout, "engine_version" => $engine_version);
 		return $this->get_response("POST", $request_url, $options);
 	}
 

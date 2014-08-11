@@ -48,7 +48,7 @@ public class StomClient extends Tws{
 		return TwsUtil.GetHttpResponse(HttpMethod.GET, ContentType.JSON, strRequestUrl, options);
 	}
 	
-	public String CreateSession(int timeout) {
+	public String CreateSession(int timeout, String strEngineVersion) {
 			
 		int iExpire = TwsUtil.GetExpire();
 		String strEndpoint = "/sessions";
@@ -59,13 +59,18 @@ public class StomClient extends Tws{
 		{
 			options.put("Authorization", TwsUtil.GetAuthHeader(strSignature));
 			options.put("timeout", timeout);
+			options.put("engine_version", strEngineVersion)
 		}
 
 		return TwsUtil.GetHttpResponse(HttpMethod.POST, ContentType.JSON, strRequestUrl, options);
 	}
+
+	public String CreateSession(int timeout) {
+		return CreateSession(timeout, "latest");
+	}
 	
 	public String CreateSession() {
-		return CreateSession(60);
+		return CreateSession(60, "latest");
 	}
 	
 	public String CloseSession(String strSessionId) {

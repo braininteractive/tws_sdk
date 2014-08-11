@@ -1,0 +1,2 @@
+#! /bin/bash
+php phpunit.phar --bootstrap ../tws.php ./tws_test.php

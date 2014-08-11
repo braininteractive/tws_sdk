@@ -186,7 +186,7 @@ class Tws:
     else:
       return response.status_code
 
-  def create_session(self, timeout=60, engine_version='20140424'):
+  def create_session(self, timeout=60, engine_version='latest'):
     self.set_expire()
     response = requests.post(
       self.endpoint('stom', '/sessions'),

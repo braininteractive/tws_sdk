@@ -169,7 +169,7 @@ class TWS
     JSON.parse(response.body)
   end
   
-  def create_session timeout=60, engine_version='20140424'
+  def create_session timeout=60, engine_version='latest'
     t = expire
     sig = signature %|POST\n\n#{t}\n/api/v#{api_version}/sessions|
     auth_header = "3WS #{api_key}:#{sig}"
