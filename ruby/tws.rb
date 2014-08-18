@@ -126,7 +126,7 @@ class TWS
   end
   
   def get_link id, filename=nil, expire_time=nil
-    t = expire expire_second
+    t = expire expire_time
     if filename.nil?
       sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/models/#{id}/download|
       "#{stor_host}/api/v#{api_version}/models/#{id}/download?expire=#{t}&key=#{api_key}&signature=#{sig}"
