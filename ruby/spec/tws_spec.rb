@@ -206,6 +206,17 @@ describe TWS do
         results['CMR']['e3cdba7295'].should_not be_blank
       end
     end
+
+    describe "testing file conversion" do
+      before(:all) do
+        @default_platform = 'blender'
+      end
+
+      it "convert a mesh as well as applying a transformation matrix" do
+        results = run_a_code('codes/conversion.transform.py', 10)
+        results['result'].should == true
+      end
+    end
   end 
 
   describe "STOPP" do
