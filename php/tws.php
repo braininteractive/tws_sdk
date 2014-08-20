@@ -3,7 +3,7 @@ class Tws{
 	var $api_key = null;
 	var $api_secret = null;
 	var $api_version = 1;
-	var $sdk_version = 1;
+	var $sdk_version = 2;
 	var $stid_host = "https://stid.dddws.com";
 	var $stom_host = "https://stom.dddws.com";
 	var $stor_host = "https://stor.dddws.com";
