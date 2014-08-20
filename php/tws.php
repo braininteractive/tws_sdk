@@ -73,7 +73,7 @@ class Tws{
 	}
 
 	function get_model($id = null) {
-		if($id == null) throw new Exception("id must be ommitted");
+		if($id == null) throw new Exception("id is missing");
 
 		$t = $this->get_expire();
 		$endpoint = "/models/" . $id;
@@ -85,7 +85,7 @@ class Tws{
 	}
 
 	function update_model($id = null, $meta = null) {
-		if($id == null)	throw new Exception("id must be ommitted");
+		if($id == null)	throw new Exception("id is missing");
 		if(!is_array($meta)) $meta = json_decode($meta);
 
 		$t = $this->get_expire();
@@ -98,7 +98,7 @@ class Tws{
 	}
 
 	function delete_model($id = null) {
-		if($id == null)	throw new Exception("id must be ommitted");
+		if($id == null)	throw new Exception("id is missing");
 
 		$t = $this->get_expire();
 		$endpoint = "/models/" . $id;
@@ -119,9 +119,23 @@ class Tws{
 		return $this->get_response("POST", $request_url, $options);
 	}
 
-	function upload_model($path = null, $params = array()) {
+	function upload_model($data = null, $params = array()) {
+		if(!array_key_exists('method', $params)){
+			$params['method'] = 'file';
+		}
+
 		$presign = json_decode($this->presigned_upload_form($params['starts_with'], $params['ip']),1);
-		$presign["form_fields"]["file"] ="@".$path;
+
+		if($params['method'] == 'file'){
+			if(!file_exists($data)){
+				return "File doesn't exist";
+			}
+			$presign["form_fields"]["file"] = "@".$data;
+		}	else if($params['method'] == 'data') {
+			$presign["form_fields"]["file"] = $data;
+		} else {
+			return "Unknown method";
+		}
 
 		try {
 			$upload_response = $this->get_response("POST", $presign["form_action"], $presign["form_fields"]);
@@ -134,11 +148,11 @@ class Tws{
 		$signature = $this->get_signature("POST", $endpoint, $t);
 		$request_url = $this->stor_host . "/api/v" . $this->api_version . $endpoint . "?expire=" . $t;
 		$options = array("Authorization" => $this->get_auth_header($signature), "meta" => $params["meta"], "upload_id" => $presign["upload_id"]);
-		return $this->get_response("POST", $request_url, $options);
+		return $this->get_response("POST", $request_url, $options);		
 	}
 
 	function get_link($id = null, $filename = null, $expire_sec = null) {
-		if($id == null) throw new Exception("id must be ommitted");
+		if($id == null) throw new Exception("id is missing");
 
 		$t = $this->get_expire($expire_sec);
 		$endpoint = "/models/" . $id;
@@ -170,7 +184,7 @@ class Tws{
 	}
 
 	function get_session($id = null) {
-		if($id == null) throw new Exception("id must be ommitted");
+		if($id == null) throw new Exception("id is missing");
 
 		$t = $this->get_expire();
 		$endpoint = "/sessions/" . $id;
@@ -192,7 +206,7 @@ class Tws{
 	}
 
 	function close_session($id = null) {
-		if($id == null) throw new Exception("id must be ommitted");
+		if($id == null) throw new Exception("id is missing");
 
 		$t = $this->get_expire();
 		$endpoint = "/sessions/" . $id;
@@ -204,8 +218,8 @@ class Tws{
 	}
 
 	function create_run($id = null, $platform = null, $code = null){
-		if($id == null) throw new Exception("id must be ommitted");
-		if($platform == null) throw new Exception("platform must be ommitted");
+		if($id == null) throw new Exception("id is missing");
+		if($platform == null) throw new Exception("platform is missing");
 		if($code == null) throw new Exception("code is null");
 
 		$t = $this->get_expire();
@@ -218,8 +232,8 @@ class Tws{
 	}
 
 	function get_runs($id = null, $platform = null) {
-		if($id == null) throw new Exception("id must be ommitted");
-		if($platform == null) throw new Exception("platform must be ommitted");
+		if($id == null) throw new Exception("id is missing");
+		if($platform == null) throw new Exception("platform is missing");
 
 		$t = $this->get_expire();
 		$endpoint = "/sessions/" . $id . "/runs";
@@ -231,8 +245,8 @@ class Tws{
 	}
 
 	function get_run($session_id = null, $id = null) {
-		if($session_id == null) throw new Exception("session id must be ommitted");
-		if($id == null) throw new Exception("run id must be ommitted");
+		if($session_id == null) throw new Exception("session id is missing");
+		if($id == null) throw new Exception("run id is missing");
 		
 		$t = $this->get_expire();
 		$endpoint = "/sessions/" . $session_id . "/runs/" . $id;
@@ -248,9 +262,9 @@ class Tws{
 ***********************************************************/
 
 	private function get_signature($method = null, $endpoint = null, $expire = null) {
-		if($method == null) throw new Exception("method must be ommitted");
-		if($endpoint == null) throw new Exception("endpoint must be ommitted");
-		if($expire == null) throw new Exception("expire must be ommitted");
+		if($method == null) throw new Exception("method is missing");
+		if($endpoint == null) throw new Exception("endpoint is missing");
+		if($expire == null) throw new Exception("expire is missing");
 
 		$base_string = $method . PHP_EOL . PHP_EOL . $expire . PHP_EOL . "/api/v" . $this->api_version . $endpoint;
 		return rawurlencode(base64_encode(hash_hmac('sha1', $base_string, $this->api_secret, true)));
@@ -266,8 +280,8 @@ class Tws{
 	}	
 
 	private function get_response($method = null, $url = null, $options = array()) {
-		if($url == null) throw new Exception("url must be ommitted");
-		if($method == null) throw new Exception("method must be ommitted");
+		if($url == null) throw new Exception("url is missing");
+		if($method == null) throw new Exception("method is missing");
 
 		try {
 			$ch = curl_init($url);
