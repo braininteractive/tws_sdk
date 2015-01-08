@@ -124,7 +124,12 @@ class Tws{
       $params['method'] = 'file';
     }
 
-    $presign = json_decode($this->presigned_upload_form($params['starts_with'], $params['ip']),1);
+    $presigned_upload_form = $this->presigned_upload_form($params['starts_with'], $params['ip']);
+
+    if($presigned_upload_form["status_code"] != 200)
+      return $presigned_upload_form;
+
+    $presign = json_decode($presigned_upload_form["contents"],1);
 
     if($params['method'] == 'file'){
       if(!file_exists($data)){
@@ -139,6 +144,10 @@ class Tws{
 
     try {
       $upload_response = $this->get_response("POST", $presign["form_action"], $presign["form_fields"]);
+
+      if($upload_response["status_code"] != 204)
+        return $upload_response;
+
     } catch (Exception $ee) {
       return $ee;
     }
@@ -326,11 +335,12 @@ class Tws{
 
     try { 
       $g = curl_exec($ch);
+      $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
       curl_close($ch);
     } catch(Exception $ee) {
       return $ee;
     }
 
-    return $g;
+    return array("status_code" => $status_code, "contents" => $g);
   }
 }

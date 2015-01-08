@@ -13,7 +13,11 @@ $api_key = 'CHANGE_THIS_API_KEY_TO_YOURS';
 $api_secret = 'CHANGE_THIS_API_SECRET_TO_YOURS';
 
 $tws = new Tws(array('api_key' => $api_key, 'api_secret'=> $api_secret));
-$tws->authenticate();
+$auth_result = $tws->authenticate();
+if($auth_result["status_code"] != 200)
+{
+  exit($auth_result["contents"]);
+}
 
 // Upload model from file
 $file_path = './file.zip'; // Actually this file not exist in example
