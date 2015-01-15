@@ -149,7 +149,10 @@ class Tws:
       data=presign["form_fields"],
       files=files
     )
-    return self.create_model(meta, presign['upload_id'])
+    if upload_response.status_code == 204:
+      return self.create_model(meta, presign['upload_id'])
+    else:
+      raise Exception(upload_response.body)
     
   def get_link(self, mid, filename=None, expire_sec=None):
     self.set_expire(expire_sec)

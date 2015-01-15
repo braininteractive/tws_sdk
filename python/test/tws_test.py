@@ -23,7 +23,12 @@ class TestClass:
 		m = t.create_model({'name': "from py.test"})
 		assert m["meta"]["name"] == "from py.test"
 		assert t.get_model(m["id"])["id"] == m["id"]
-
+		
+	def test_upload_a_model(self):
+		m = t.upload_model("tws_test.py", {'name': "tws_test.py"})
+		assert m["meta"]["name"] == "tws_test.py"
+		assert t.get_model(m["id"])["id"] == m["id"]
+		
 	def test_get_models(self):	
 		assert t.get_models() != None
 

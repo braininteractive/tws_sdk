@@ -81,6 +81,13 @@ describe TWS do
       end
     end
     
+    describe "upload failure" do
+      it "raise when s3 returns other than 204" do
+        RestClient.stub(:post).and_return(double(:code => 400, :body => 'Error'))
+        expect { @tws.upload_model("tws_spec.rb", :meta => {:filename => 'tws_spec.rb', :filesize => File.size('tws_spec.rb')}) }.to raise_error
+      end
+    end
+    
     it "deletes a model" do
       @tws.delete_model(@m["id"]).should == 204
     end

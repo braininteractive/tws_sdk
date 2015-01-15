@@ -116,6 +116,8 @@ class TWS
       raise e.response
     end
     
+    raise upload_response.body unless upload_response.code == 204
+    
     t = expire
     sig = signature %|POST\n\n#{t}\n/api/v#{api_version}/models|
     auth_header = "3WS #{api_key}:#{sig}"
