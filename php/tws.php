@@ -146,7 +146,7 @@ class Tws{
       $upload_response = $this->get_response("POST", $presign["form_action"], $presign["form_fields"]);
 
       if($upload_response["status_code"] != 204)
-        return $upload_response;
+        throw new Exception($upload_response);
 
     } catch (Exception $ee) {
       return $ee;
