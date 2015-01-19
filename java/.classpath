@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="tws_sdk/src"/>
+	<classpathentry kind="lib" path="tws_sdk/jar/tws_sdk_0.2.jar"/>
+	<classpathentry kind="lib" path="tws_sdk/jar/tws_sdk_0.3.jar"/>
+	<classpathentry kind="lib" path="tws_sdk/jar/tws_sdk_0.4.jar"/>
+	<classpathentry kind="lib" path="tws_sdk/lib/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="tws_sdk/lib/commons-codec-1.9/commons-codec-1.9-javadoc.jar"/>
+	<classpathentry kind="lib" path="tws_sdk/lib/commons-codec-1.9/commons-codec-1.9-sources.jar"/>
+	<classpathentry kind="lib" path="tws_sdk/lib/commons-codec-1.9/commons-codec-1.9-test-sources.jar"/>
+	<classpathentry kind="lib" path="tws_sdk/lib/commons-codec-1.9/commons-codec-1.9-tests.jar"/>
+	<classpathentry kind="lib" path="tws_sdk/lib/commons-codec-1.9/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="tws_sdk/lib/gson-2.2.4.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="tws_sdk/bin"/>
+</classpath>
