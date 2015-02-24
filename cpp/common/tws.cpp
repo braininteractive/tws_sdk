@@ -13,7 +13,6 @@
 #include <Poco/URI.h>
 #include <Poco/Net/Context.h>
 #include <Poco/Net/AcceptCertificateHandler.h>
-//#include <Poco/Net/ConsoleCertificateHandler.h>
 #include <Poco/Net/InvalidCertificateHandler.h>
 #include <Poco/Net/SSLManager.h>
 #include <Poco/Net/SocketAddress.h>
