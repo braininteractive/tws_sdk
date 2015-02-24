@@ -1,0 +1,275 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F595C6671A8B63D20000E3E3 /* tws.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F595C6651A8B63D20000E3E3 /* tws.cpp */; };
+		F595C6681A8B63D20000E3E3 /* tws.h in Headers */ = {isa = PBXBuildFile; fileRef = F595C6661A8B63D20000E3E3 /* tws.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F595C6751A8B6AAB0000E3E3 /* libPocoCrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F595C6711A8B6AAB0000E3E3 /* libPocoCrypto.a */; };
+		F595C6761A8B6AAB0000E3E3 /* libPocoFoundation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F595C6721A8B6AAB0000E3E3 /* libPocoFoundation.a */; };
+		F595C6771A8B6AAB0000E3E3 /* libPocoNet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F595C6731A8B6AAB0000E3E3 /* libPocoNet.a */; };
+		F595C6781A8B6AAB0000E3E3 /* libPocoNetSSL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F595C6741A8B6AAB0000E3E3 /* libPocoNetSSL.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F595C65E1A8B63B40000E3E3 /* libTWS_SDK_CPP_STATIC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTWS_SDK_CPP_STATIC.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		F595C6651A8B63D20000E3E3 /* tws.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tws.cpp; path = ../../common/tws.cpp; sourceTree = "<group>"; };
+		F595C6661A8B63D20000E3E3 /* tws.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tws.h; path = ../../common/tws.h; sourceTree = "<group>"; };
+		F595C6711A8B6AAB0000E3E3 /* libPocoCrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPocoCrypto.a; path = ../../../../libraries/poco/1.6.0/static/lib/libPocoCrypto.a; sourceTree = "<group>"; };
+		F595C6721A8B6AAB0000E3E3 /* libPocoFoundation.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPocoFoundation.a; path = ../../../../libraries/poco/1.6.0/static/lib/libPocoFoundation.a; sourceTree = "<group>"; };
+		F595C6731A8B6AAB0000E3E3 /* libPocoNet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPocoNet.a; path = ../../../../libraries/poco/1.6.0/static/lib/libPocoNet.a; sourceTree = "<group>"; };
+		F595C6741A8B6AAB0000E3E3 /* libPocoNetSSL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPocoNetSSL.a; path = ../../../../libraries/poco/1.6.0/static/lib/libPocoNetSSL.a; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F595C65B1A8B63B40000E3E3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F595C6751A8B6AAB0000E3E3 /* libPocoCrypto.a in Frameworks */,
+				F595C6761A8B6AAB0000E3E3 /* libPocoFoundation.a in Frameworks */,
+				F595C6771A8B6AAB0000E3E3 /* libPocoNet.a in Frameworks */,
+				F595C6781A8B6AAB0000E3E3 /* libPocoNetSSL.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F595C6551A8B63B40000E3E3 = {
+			isa = PBXGroup;
+			children = (
+				F595C6711A8B6AAB0000E3E3 /* libPocoCrypto.a */,
+				F595C6721A8B6AAB0000E3E3 /* libPocoFoundation.a */,
+				F595C6731A8B6AAB0000E3E3 /* libPocoNet.a */,
+				F595C6741A8B6AAB0000E3E3 /* libPocoNetSSL.a */,
+				F595C6651A8B63D20000E3E3 /* tws.cpp */,
+				F595C6661A8B63D20000E3E3 /* tws.h */,
+				F595C65F1A8B63B40000E3E3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F595C65F1A8B63B40000E3E3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F595C65E1A8B63B40000E3E3 /* libTWS_SDK_CPP_STATIC.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		F595C65C1A8B63B40000E3E3 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F595C6681A8B63D20000E3E3 /* tws.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		F595C65D1A8B63B40000E3E3 /* TWS_SDK_CPP_STATIC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F595C6621A8B63B40000E3E3 /* Build configuration list for PBXNativeTarget "TWS_SDK_CPP_STATIC" */;
+			buildPhases = (
+				F595C65A1A8B63B40000E3E3 /* Sources */,
+				F595C65B1A8B63B40000E3E3 /* Frameworks */,
+				F595C65C1A8B63B40000E3E3 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TWS_SDK_CPP_STATIC;
+			productName = TWS_SDK_CPP_STATIC;
+			productReference = F595C65E1A8B63B40000E3E3 /* libTWS_SDK_CPP_STATIC.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F595C6561A8B63B40000E3E3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Jinkyou Son";
+				TargetAttributes = {
+					F595C65D1A8B63B40000E3E3 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+				};
+			};
+			buildConfigurationList = F595C6591A8B63B40000E3E3 /* Build configuration list for PBXProject "TWS_SDK_CPP_STATIC" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = F595C6551A8B63B40000E3E3;
+			productRefGroup = F595C65F1A8B63B40000E3E3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F595C65D1A8B63B40000E3E3 /* TWS_SDK_CPP_STATIC */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F595C65A1A8B63B40000E3E3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F595C6671A8B63D20000E3E3 /* tws.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F595C6601A8B63B40000E3E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		F595C6611A8B63B40000E3E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		F595C6631A8B63B40000E3E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_CXX_LIBRARY = "libc++";
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = "POCO_STATIC=1";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/json/workspace/libraries/poco/1.6.0/static/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		F595C6641A8B63B40000E3E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_CXX_LIBRARY = "libc++";
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = "POCO_STATIC=1";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/json/workspace/libraries/poco/1.6.0/static/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F595C6591A8B63B40000E3E3 /* Build configuration list for PBXProject "TWS_SDK_CPP_STATIC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F595C6601A8B63B40000E3E3 /* Debug */,
+				F595C6611A8B63B40000E3E3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F595C6621A8B63B40000E3E3 /* Build configuration list for PBXNativeTarget "TWS_SDK_CPP_STATIC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F595C6631A8B63B40000E3E3 /* Debug */,
+				F595C6641A8B63B40000E3E3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F595C6561A8B63B40000E3E3 /* Project object */;
+}

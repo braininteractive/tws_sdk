@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>0673F0FA-A73D-46BF-AD1F-47985598EA39</string>
+	<key>IDESourceControlProjectName</key>
+	<string>TWS_SDK_CPP</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>C4BF1BA9D8B29B5380275642CDDA43C7EF411F1F</key>
+		<string>https://github.com/workon3d/tws_sdk</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>cpp/mac/TWS_SDK_CPP.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>C4BF1BA9D8B29B5380275642CDDA43C7EF411F1F</key>
+		<string>../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/workon3d/tws_sdk</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>C4BF1BA9D8B29B5380275642CDDA43C7EF411F1F</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C4BF1BA9D8B29B5380275642CDDA43C7EF411F1F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>tws_sdk</string>
+		</dict>
+	</array>
+</dict>
+</plist>

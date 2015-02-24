@@ -1,0 +1,48 @@
+﻿Build started 2015-02-24 오후 2:09:40.
+Project "\\vmware-host\Shared Folders\workspace\tws_sdk\cpp\windows\TWS_SDK_CPP\TWS_SDK_CPP.vcxproj" on node 2 (Build target(s)).
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /I"C:\workspace\libraries\poco-1.6.0-all\Util\include" /I"C:\workspace\libraries\OpenSSL-Win64\include" /I"C:\workspace\libraries\poco-1.6.0-all\Crypto\include" /I"C:\workspace\libraries\poco-1.6.0-all\JSON\include" /I"C:\workspace\libraries\poco-1.6.0-all\NetSSL_OpenSSL\include" /I"C:\workspace\libraries\poco-1.6.0-all\Net\include" /I"C:\workspace\libraries\poco-1.6.0-all\Foundation\include" /IZ:\workspace\tws_sdk\cpp\common /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt ..\..\common\tws.cpp
+  tws.cpp
+..\..\common\tws.cpp(784): warning C4244: 'return' : conversion from 'time_t' to 'long', possible loss of data
+C:\workspace\libraries\poco-1.6.0-all\Foundation\include\Poco/SharedPtr.h(70): warning C4150: deletion of pointer to incomplete type 'Poco::Net::PrivateKeyPassphraseHandler'; no destructor called
+          C:\workspace\libraries\poco-1.6.0-all\NetSSL_OpenSSL\include\Poco/Net/PrivateKeyFactory.h(30) : see declaration of 'Poco::Net::PrivateKeyPassphraseHandler'
+          C:\workspace\libraries\poco-1.6.0-all\Foundation\include\Poco/SharedPtr.h(69) : while compiling class template member function 'void Poco::ReleasePolicy<C>::release(C *)'
+          with
+          [
+              C=Poco::Net::PrivateKeyPassphraseHandler
+          ]
+          C:\workspace\libraries\poco-1.6.0-all\Foundation\include\Poco/SharedPtr.h(130) : see reference to function template instantiation 'void Poco::ReleasePolicy<C>::release(C *)' being compiled
+          with
+          [
+              C=Poco::Net::PrivateKeyPassphraseHandler
+          ]
+          C:\workspace\libraries\poco-1.6.0-all\Foundation\include\Poco/SharedPtr.h(130) : see reference to class template instantiation 'Poco::ReleasePolicy<C>' being compiled
+          with
+          [
+              C=Poco::Net::PrivateKeyPassphraseHandler
+          ]
+          C:\workspace\libraries\poco-1.6.0-all\Foundation\include\Poco/SharedPtr.h(122) : while compiling class template member function 'Poco::SharedPtr<Poco::Net::PrivateKeyPassphraseHandler,Poco::ReferenceCounter,Poco::ReleasePolicy<C>>::SharedPtr(C *)'
+          with
+          [
+              C=Poco::Net::PrivateKeyPassphraseHandler
+          ]
+          ..\..\common\tws.cpp(810) : see reference to function template instantiation 'Poco::SharedPtr<Poco::Net::PrivateKeyPassphraseHandler,Poco::ReferenceCounter,Poco::ReleasePolicy<C>>::SharedPtr(C *)' being compiled
+          with
+          [
+              C=Poco::Net::PrivateKeyPassphraseHandler
+          ]
+          C:\workspace\libraries\poco-1.6.0-all\NetSSL_OpenSSL\include\Poco/Net/SSLManager.h(292) : see reference to class template instantiation 'Poco::SharedPtr<Poco::Net::PrivateKeyPassphraseHandler,Poco::ReferenceCounter,Poco::ReleasePolicy<C>>' being compiled
+          with
+          [
+              C=Poco::Net::PrivateKeyPassphraseHandler
+          ]
+Lib:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\Lib.exe /OUT:"\\vmware-host\Shared Folders\workspace\tws_sdk\cpp\windows\x64\Debug\TWS_SDK_CPP.lib" /LIBPATH:"C:\workspace\libraries\poco-1.6.0-all\lib64" /NOLOGO /MACHINE:X64 x64\Debug\stringconverter.obj
+  x64\Debug\tws.obj
+  x64\Debug\tws_cmr.obj
+  TWS_SDK_CPP.vcxproj -> \\vmware-host\Shared Folders\workspace\tws_sdk\cpp\windows\x64\Debug\TWS_SDK_CPP.lib
+Done Building Project "\\vmware-host\Shared Folders\workspace\tws_sdk\cpp\windows\TWS_SDK_CPP\TWS_SDK_CPP.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:08.19
