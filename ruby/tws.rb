@@ -43,7 +43,7 @@ class TWS
       :key => api_key,
       :signature => sig,
       :method => 'POST',
-      :url => '/api/v1/authenticate',
+      :url => "/api/v#{api_version}/authenticate",
       :options => nil,
       :expire => t
     }
@@ -113,7 +113,7 @@ class TWS
       upload_response = RestClient.post presign["form_action"],
                                         presign["form_fields"].merge({ :file => File.new(path), :multipart => true })
     rescue => e
-      raise e.response
+      raise e
     end
     
     raise upload_response.body unless upload_response.code == 204
