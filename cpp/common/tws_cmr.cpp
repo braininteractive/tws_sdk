@@ -20,9 +20,10 @@
 namespace TWS_SDK {
     std::string TWS_CMR::CHUNK_EXTENSION = ".tws";
     
-    Poco::DynamicStruct TWS_CMR::createCMR(std::string stor_id, std::string engine_version /* = "latest" */, bool preserve_downloaded_file /* = false */, bool mesh_heal /* = false */, bool clustering /* = false */, bool wait_to_complete /* = false */, bool check_existing /* = false */)
+    std::string TWS_CMR::createCMR(std::string stor_id, std::string engine_version /* = "latest" */, bool preserve_downloaded_file /* = false */, bool mesh_heal /* = false */, bool clustering /* = false */, bool wait_to_complete /* = false */, bool check_existing /* = false */)
     {
-        Poco::DynamicStruct m = getModel(stor_id);
+        Poco::DynamicStruct m = TWS::stringToJSON(getModel(stor_id));
+        
         if (m.empty())
         {
             throw std::invalid_argument("Invalid stor_id: " + stor_id);
@@ -39,15 +40,15 @@ namespace TWS_SDK {
                 {
                     Poco::DynamicStruct status;
                     status["cmr_status"] = cmr_status;
-                    return status;
+                    return status.toString();
                 }
             }
         }
         
-        Poco::DynamicStruct session = createSession("3600", engine_version);
+        Poco::DynamicStruct session = TWS::stringToJSON(createSession("3600", engine_version));
         if (session.empty())
         {
-            return Poco::DynamicStruct();
+            return "";
         }
         
         try
@@ -57,7 +58,7 @@ namespace TWS_SDK {
             if (!meta.empty() && wait_to_complete)
             {
                 meta["cmr_status"] = "processing";
-                updateModel(stor_id, meta);
+                updateModel(stor_id, meta.toString());
             }
             
             std::string code =
@@ -66,7 +67,7 @@ c = Cmr(api_key='" + m_api_key + "', api_secret='" + m_api_secret + "', keep_dow
 conv_result = c.convert('" + stor_id + "')\n\
 print(json.dumps(conv_result))";
             
-            Poco::DynamicStruct run = createRun(session_id, "blender", code);
+            Poco::DynamicStruct run = TWS::stringToJSON(createRun(session_id, "blender", code));
             
             if (wait_to_complete)
             {
@@ -78,14 +79,14 @@ print(json.dumps(conv_result))";
                     std::chrono::milliseconds dura(1000);
                     std::this_thread::sleep_for(dura);
                     
-                    run = getRun(session_id, run_id);
+                    run = TWS::stringToJSON(getRun(session_id, run_id));
                     iRet++;
                     std::cout << "runrunrun" << std::endl;
                 }
                 
                 if (!meta.empty())
                 {
-                    m = getModel(stor_id);
+                    m = TWS::stringToJSON(getModel(stor_id));
                     meta = m["meta"].extract<Poco::DynamicStruct>();
                     
                     if (!meta.empty() && !meta["cmr_status"].isEmpty())
@@ -114,13 +115,13 @@ print(json.dumps(conv_result))";
                             meta["cmr_status"] = "error";
                         }
                         
-                        updateModel(stor_id, meta);
+                        updateModel(stor_id, meta.toString());
                     }
                 }
                 closeSession(session_id);
-                return run;
+                return run.toString();
             }
-            return run;
+            return run.toString();
         }
         catch (Poco::Exception e)
         {
@@ -136,7 +137,7 @@ print(json.dumps(conv_result))";
     
     std::string TWS_CMR::getCMR(std::string stor_id, long expire_seconds /* = 0 */)
     {
-        Poco::DynamicStruct m = getModel(stor_id);
+        Poco::DynamicStruct m = TWS::stringToJSON(getModel(stor_id));
         std::cout << m.toString() << std::endl;
         Poco::DynamicStruct cmr;
         
@@ -320,7 +321,6 @@ print(json.dumps(conv_result))";
         if (jsonObj.empty())
             return;
         
-        TWS_CMR tws_cmr("", "", "");
         (this->*callback)(jsonObj, cache);
         
         for (auto it = jsonObj.begin(); it != jsonObj.end(); ++it)

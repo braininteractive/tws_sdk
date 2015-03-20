@@ -15,13 +15,13 @@ namespace TWS_SDK {
     class TWS_CMR : public TWS
     {
     public:
-        TWS_CMR(std::string key, std::string secret, std::string api_version = "", std::string stom_host = "", std::string stor_host = "")
-        : TWS(key, secret, api_version, stom_host, stor_host)
+        TWS_CMR(const std::string& key, const std::string& secret, const std::string& stom_host = "", const std::string& stor_host = "", const std::string& api_version = "")
+        : TWS(key, secret, stom_host, stor_host, "", api_version)
         {
         
         }
         
-        Poco::DynamicStruct createCMR(std::string stor_id, std::string engine_version = "latest", bool preserve_downloaded_file = false, bool mesh_heal = false, bool clustering = false, bool wait_to_complete = false, bool check_existing = false);
+        std::string createCMR(std::string stor_id, std::string engine_version = "latest", bool preserve_downloaded_file = false, bool mesh_heal = false, bool clustering = false, bool wait_to_complete = false, bool check_existing = false);
         std::string getCMR(std::string stor_id, long expire_seconds = 0);
         std::string convertToLocalCMR(std::string cmr_json_string, std::string base_directory);
 

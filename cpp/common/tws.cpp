@@ -52,33 +52,30 @@ namespace TWS_SDK
 {
     const std::string URI_ILLEGAL_CHAR = "!?#/'\",;:$&()[]*+=@";
     
-    std::string TWS::m_api_key = "";
-    std::string TWS::m_api_secret = "";
-    std::string TWS::m_stom_host = "https://stom.dddws.com";
-    std::string TWS::m_stor_host = "https://stor.dddws.com";
-    std::string TWS::m_stid_host = "https://stid.dddws.com";
-    std::string TWS::m_cloud3d_host = "https://cloud3d.herokuapp.com";
-    std::string TWS::m_api_version = "1";
-    long TWS::m_expire_seconds = 3600;
-    std::string TWS::m_auth_schema = "3WS";
-    
-    TWS::TWS(std::string key, std::string secret, std::string api_version /* = "" */, std::string stom_host /* = "" */, std::string stor_host /* = "" */, std::string stid_host /* = "" */)
+    TWS::TWS(std::string key, std::string secret, std::string stom_host /* = "" */, std::string stor_host /* = "" */, std::string stid_host /* = "" */, std::string api_version /* = "" */)
+    :m_api_key(key)
+    ,m_api_secret(secret)
+    ,m_stom_host("https://stom.dddws.com")
+    ,m_stor_host("https://stor.dddws.com")
+    ,m_stid_host("https://stid.dddws.com")
+    ,m_cloud3d_host("https://cloud3d.herokuapp.com")
+    ,m_api_version("1")
+    ,m_expire_seconds(3600)
+    ,m_auth_schema("3WS")
     {
+        if (!api_version.empty()) m_api_version = api_version;
+        if (!stom_host.empty()) m_stom_host = stom_host;
+        if (!stor_host.empty()) m_stor_host = stor_host;
+        if (!stid_host.empty()) m_stid_host = stid_host;
+
         TWS_EXCEPTION_BLOCK_START
         {
-            m_api_key = key;
-            m_api_secret = secret;
-            if (!api_version.empty()) m_api_version = api_version;
-            if (!stom_host.empty()) m_stom_host = stom_host;
-            if (!stor_host.empty()) m_stor_host = stor_host;
-            if (!stid_host.empty()) m_stid_host = stid_host;
-            
             checkParams();
         }
         TWS_EXCEPTION_BLOCK_END
     }
     
-    Poco::DynamicStruct TWS::authenticate()
+    std::string TWS::authenticate()
     {
 		TWS_TEST_COUT(__FUNCTION__);
         
@@ -88,7 +85,7 @@ namespace TWS_SDK
         {
             Poco::Net::initializeSSL();
             
-            HTTP_METHOD method = HTTP_METHOD::POST;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_POST;
             std::string expire_t = std::to_string(expire());
             std::string path = "/authenticate";
             std::string signature = getSignature(method, expire_t, path);
@@ -97,7 +94,7 @@ namespace TWS_SDK
             uri.setPath("/api/v" + m_api_version + path);
             uri.addQueryParameter("key", m_api_key);
             uri.addQueryParameter("signature", signature);
-            uri.addQueryParameter("method", convertHTTPMethodToString(method));
+            uri.addQueryParameter("method", TWS::convertHTTPMethodToString(method));
             uri.addQueryParameter("url", "/api/v" + m_api_version + path);
             uri.addQueryParameter("expire", expire_t);
             
@@ -111,10 +108,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
-    Poco::DynamicStruct TWS::createModel(Poco::DynamicStruct meta /* = Poco::DynamicStruct() */, std::string upload_id /* = "" */)
+    std::string TWS::createModel(const std::string& meta /* = "" */, const std::string& upload_id /* = "" */)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -122,7 +119,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::POST;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_POST;
             std::string expire_t = std::to_string(expire());
             std::string path = "/models";
             std::string signature = getSignature(method, expire_t, path);
@@ -135,7 +132,7 @@ namespace TWS_SDK
             
             Poco::DynamicStruct requestBody;
             if (!meta.empty())
-                requestBody["meta"] = meta;
+                requestBody["meta"] = TWS::stringToJSON(meta);
             if (!upload_id.empty())
                 requestBody["upload_id"] = upload_id;
 
@@ -147,10 +144,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
-    Poco::DynamicStruct TWS::getModel(std::string id /* = "" */)
+    std::string TWS::getModel(const std::string& id /* = "" */)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -158,7 +155,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::GET;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_GET;
             std::string expire_t = std::to_string(expire());
             std::string path = "/models/" + id;
             std::string signature = getSignature(method, expire_t, path);
@@ -175,10 +172,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
-    Poco::Dynamic::Array TWS::getModels(std::unordered_map<std::string, std::string> query_params /* = std::unordered_map<std::string, std::string>() */)
+    std::string TWS::getModels(const std::unordered_map<std::string, std::string>& query_params /* = std::unordered_map<std::string, std::string>() */)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -186,7 +183,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::GET;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_GET;
             std::string expire_t = std::to_string(expire());
             std::string path = "/models";
             std::string signature = getSignature(method, expire_t, path);
@@ -208,10 +205,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return TWS::pocoArrayToString(result);
     }
     
-    Poco::DynamicStruct TWS::updateModel(std::string id, Poco::DynamicStruct meta /* = Poco::DynamicStruct() */)
+    std::string TWS::updateModel(const std::string& id, const std::string& meta /* = "" */)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -219,7 +216,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::PUT;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_PUT;
             std::string expire_t = std::to_string(expire());
             std::string path = "/models/" + id;
             std::string signature = getSignature(method, expire_t, path);
@@ -232,7 +229,7 @@ namespace TWS_SDK
             
             Poco::DynamicStruct requestBody;
             if (!meta.empty())
-                requestBody["meta"] = meta;
+                requestBody["meta"] = TWS::stringToJSON(meta);
             
             TWS_TEST_COUT(requestBody.toString());
             
@@ -242,10 +239,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
-    Poco::DynamicStruct TWS::deleteModel(std::string id)
+    std::string TWS::deleteModel(const std::string& id)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -253,7 +250,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::DELETE;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_DELETE;
             std::string expire_t = std::to_string(expire());
             std::string path = "/models/" + id;
             std::string signature = getSignature(method, expire_t, path);
@@ -271,10 +268,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
-    Poco::DynamicStruct TWS::presignedUploadForm(std::unordered_map<std::string, std::string> starts_with_hash /* = std::unordered_map<std::string, std::string>() */, std::string ip_str /* = "" */)
+    std::string TWS::presignedUploadForm(const std::unordered_map<std::string, std::string>& starts_with_hash /* = std::unordered_map<std::string, std::string>() */, const std::string& ip_str /* = "" */)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -282,7 +279,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::POST;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_POST;
             std::string expire_t = std::to_string(expire());
             std::string path = "/models/presign";
             std::string signature = getSignature(method, expire_t, path);
@@ -314,10 +311,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
-    Poco::DynamicStruct TWS::uploadModel(std::string path, Poco::DynamicStruct opts /* = Poco::DynamicStruct() */, std::string ip_str /* = "" */)
+    std::string TWS::uploadModel(const std::string& path, const std::string& opts /* = "" */, const std::string& ip_str /* = "" */)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -325,11 +322,12 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
+            Poco::DynamicStruct optsStruct = TWS::stringToJSON(opts);
             // Upload to pre-signed s3 url
             std::unordered_map<std::string, std::string> starts_with;
             try
             {
-                auto var = opts["starts_with"];
+                auto var = optsStruct["starts_with"];
                 if (var.isStruct())
                 {
                     auto starts_with_struct = var.extract<Poco::DynamicStruct>();
@@ -348,8 +346,7 @@ namespace TWS_SDK
                 starts_with.clear();
             }
             
-            
-            Poco::DynamicStruct presign = presignedUploadForm(starts_with, ip_str);
+            Poco::DynamicStruct presign = TWS::stringToJSON(presignedUploadForm(starts_with, ip_str));
             Poco::URI upload_uri(presign["form_action"].convert<std::string>());
             Poco::DynamicStruct form_fields = presign["form_fields"].extract<Poco::DynamicStruct>();
             
@@ -383,7 +380,7 @@ namespace TWS_SDK
             upload_session = nullptr;
             
             // Create model in STOR
-            HTTP_METHOD method = HTTP_METHOD::POST;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_POST;
             std::string expire_t = std::to_string(expire());
             std::string create_path = "/models";
             std::string signature = getSignature(method, expire_t, create_path);
@@ -396,9 +393,9 @@ namespace TWS_SDK
             TWS_TEST_COUT(create_uri.toString());
             
             Poco::DynamicStruct meta;
-            if (!opts.empty() && !opts["meta"].isEmpty())
+            if (!opts.empty() && !optsStruct["meta"].isEmpty())
             {
-                Poco::Dynamic::Var var = opts["meta"];
+                Poco::Dynamic::Var var = optsStruct["meta"];
                 if (var.isStruct())
                 {
                     meta = var.extract<Poco::DynamicStruct>();
@@ -419,10 +416,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
-    std::string TWS::getLink(std::string id, std::string filename /* = "" */, long expire_seconds /* = 0 */)
+    std::string TWS::getLink(const std::string& id, const std::string& filename /* = "" */, long long expire_seconds /* = 0 */)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -449,7 +446,7 @@ namespace TWS_SDK
         return result;
     }
     
-    Poco::DynamicStruct TWS::requetTPTX(std::unordered_map<std::string, std::string> opts /* = std::unordered_map<std::string, std::string>() */)
+    std::string TWS::requetTPTX(const std::unordered_map<std::string, std::string>& opts /* = std::unordered_map<std::string, std::string>() */)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -457,7 +454,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::POST;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_POST;
             std::string path = "/jobs";
             
             // request
@@ -470,9 +467,9 @@ namespace TWS_SDK
             requestBody["auth_token"] = "HRJ7PsKqAVzwYbV5ENaK";
             if (!opts.empty())
             {
-                requestBody["input_url"] = opts["input_url"];
-                requestBody["input_type"] = opts["input_type"];
-                requestBody["include_thumbnail"] = opts["include_thumbnail"];
+                requestBody["input_url"] = opts.at("input_url");
+                requestBody["input_type"] = opts.at("input_type");
+                requestBody["include_thumbnail"] = opts.at("include_thumbnail");
             }
             
             TWS_TEST_COUT(requestBody.toString());
@@ -483,10 +480,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
-    Poco::DynamicStruct TWS::poleTPTX(std::string job_id)
+    std::string TWS::poleTPTX(const std::string& job_id)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -494,7 +491,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::GET;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_GET;
             std::string path = "/jobs/" + job_id;
 
             // request
@@ -510,10 +507,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
-    Poco::DynamicStruct TWS::createSession(std::string timeout /* = "60" */, std::string engine_ver /* = "latest" */)
+    std::string TWS::createSession(const std::string& timeout /* = "60" */, const std::string& engine_ver /* = "latest" */)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -521,7 +518,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::POST;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_POST;
             std::string expire_t = std::to_string(expire());
             std::string path = "/sessions";
             std::string signature = getSignature(method, expire_t, path);
@@ -547,10 +544,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
 
-    Poco::Dynamic::Array TWS::getSessions(std::unordered_map<std::string, std::string> query_params /* = std::unordered_map<std::string, std::string>()*/)
+    std::string TWS::getSessions(const std::unordered_map<std::string, std::string>& query_params /* = std::unordered_map<std::string, std::string>()*/)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -558,37 +555,32 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            long expire_t = expire();
-            std::string t = std::to_string(expire_t);
-            std::string sig = signature("GET\n\n" + t + "\n/api/v" + m_api_version + "/sessions");
-            std::string auth_schema = "3WS";
-            std::string auth_info = m_api_key + ":" + sig;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_GET;
+            std::string expire_t = std::to_string(expire());
+            std::string path = "/sessions";
+            std::string signature = getSignature(method, expire_t, path);
             
             // request
             Poco::URI uri(m_stom_host);
             uri.setPath("/api/v" + m_api_version + "/sessions");
-            uri.addQueryParameter("expire", t);
+            uri.addQueryParameter("expire", expire_t);
             for (auto it = query_params.begin(); it != query_params.end(); ++it)
             {
                 uri.addQueryParameter(it->first, it->second);
             }
             
             TWS_TEST_COUT(uri.toString());
-            TWS_TEST_COUT(auth_schema + " " + auth_info);
             
             Poco::SharedPtr<Poco::Net::HTTPClientSession> session = getHTTPClientSession(uri);
-            Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_GET, uri.getPathAndQuery(), Poco::Net::HTTPMessage::HTTP_1_0);
-            req.setCredentials(auth_schema, auth_info);
-            session->sendRequest(req);
-            
+            sendRequest(*session, uri, method, signature);
             getResponse(*session, result);
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return TWS::pocoArrayToString(result);
     }
     
-    Poco::DynamicStruct TWS::getSession(std::string id)
+    std::string TWS::getSession(const std::string& id)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -596,7 +588,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::GET;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_GET;
             std::string expire_t = std::to_string(expire());
             std::string path = "/sessions/" + id;
             std::string signature = getSignature(method, expire_t, path);
@@ -614,11 +606,11 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
     
-    Poco::DynamicStruct TWS::closeSession(std::string id)
+    std::string TWS::closeSession(const std::string& id)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -626,7 +618,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::DELETE;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_DELETE;
             std::string expire_t = std::to_string(expire());
             std::string path = "/sessions/" + id;
             std::string signature = getSignature(method, expire_t, path);
@@ -644,10 +636,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
-    Poco::DynamicStruct TWS::createRun(std::string id, std::string platform, std::string code)
+    std::string TWS::createRun(const std::string& id, const std::string& platform, const std::string& code)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -655,7 +647,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::POST;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_POST;
             std::string expire_t = std::to_string(expire());
             std::string path = "/sessions/" + id + "/runs";
             std::string signature = getSignature(method, expire_t, path);
@@ -681,10 +673,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
-    Poco::Dynamic::Array TWS::getRuns(std::string id, std::string platform /* = "" */)
+    std::string TWS::getRuns(const std::string& id, const std::string& platform /* = "" */)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -692,7 +684,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::GET;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_GET;
             std::string expire_t = std::to_string(expire());
             std::string path = "/sessions/" + id + "/runs";
             std::string signature = getSignature(method, expire_t, path);
@@ -711,10 +703,10 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return TWS::pocoArrayToString(result);
     }
     
-    Poco::DynamicStruct TWS::getRun(std::string session_id, std::string run_id)
+    std::string TWS::getRun(const std::string& session_id, const std::string& run_id)
     {
         TWS_TEST_COUT(__FUNCTION__);
         
@@ -722,7 +714,7 @@ namespace TWS_SDK
         
         TWS_EXCEPTION_BLOCK_START
         {
-            HTTP_METHOD method = HTTP_METHOD::GET;
+            TWS_HTTP_METHOD method = TWS_HTTP_METHOD::TWS_HTTP_METHOD_GET;
             std::string expire_t = std::to_string(expire());
             std::string path = "/sessions/" + session_id + "/runs/" + run_id;
             std::string signature = getSignature(method, expire_t, path);
@@ -740,7 +732,7 @@ namespace TWS_SDK
         }
         TWS_EXCEPTION_BLOCK_END
         
-        return result;
+        return result.toString();
     }
     
     // private
@@ -775,7 +767,7 @@ namespace TWS_SDK
         }
     }
     
-    long TWS::expire(long expire_seconds /* = 0 */)
+    long long TWS::expire(long long expire_seconds /* = 0 */)
     {
         time_t now = time(NULL);
         if (expire_seconds == 0)
@@ -783,9 +775,9 @@ namespace TWS_SDK
         return now + expire_seconds;
     }
     
-    std::string TWS::getSignature(HTTP_METHOD method, std::string expire_t, std::string path)
+    std::string TWS::getSignature(TWS_HTTP_METHOD method, std::string expire_t, std::string path)
     {
-        std::string sig = signature(convertHTTPMethodToString(method) + "\n\n" + expire_t + "\n/api/v" + m_api_version + path);
+        std::string sig = signature(TWS::convertHTTPMethodToString(method) + "\n\n" + expire_t + "\n/api/v" + m_api_version + path);
         TWS_TEST_COUT("signature= " + sig);
         
         return sig;
@@ -816,11 +808,11 @@ namespace TWS_SDK
         }
     }
     
-    void TWS::sendRequest(Poco::Net::HTTPClientSession& session, Poco::URI uri, HTTP_METHOD method, std::string signature /* = "" */, Poco::DynamicStruct requestBody /* = Poco::DynamicStruct() */)
+    void TWS::sendRequest(Poco::Net::HTTPClientSession& session, Poco::URI uri, TWS_HTTP_METHOD method, std::string signature /* = "" */, Poco::DynamicStruct requestBody /* = Poco::DynamicStruct() */)
     {
         TWS_TEST_COUT("send request");
         
-        Poco::Net::HTTPRequest req(convertHTTPMethodToPocoHTTPMethod(method), uri.getPathAndQuery(), Poco::Net::HTTPMessage::HTTP_1_0);
+        Poco::Net::HTTPRequest req(TWS::convertHTTPMethodToPocoHTTPMethod(method), uri.getPathAndQuery(), Poco::Net::HTTPMessage::HTTP_1_0);
         
         TWS_TEST_COUT("auth= " + m_auth_schema + " " + getAuthorizationInfo(signature));
         if (!signature.empty())
@@ -908,35 +900,62 @@ namespace TWS_SDK
         TWS_TEST_COUT("getResponse finished");
     }
     
-    const std::string TWS::convertHTTPMethodToString(HTTP_METHOD method)
+    const std::string TWS::convertHTTPMethodToString(TWS_HTTP_METHOD method)
     {
         switch (method) {
-            case HTTP_METHOD::GET:
+            case TWS_HTTP_METHOD::TWS_HTTP_METHOD_GET:
                 return "GET";
-            case HTTP_METHOD::PUT:
+            case TWS_HTTP_METHOD::TWS_HTTP_METHOD_PUT:
                 return "PUT";
-            case HTTP_METHOD::POST:
+            case TWS_HTTP_METHOD::TWS_HTTP_METHOD_POST:
                 return "POST";
-            case HTTP_METHOD::DELETE:
+            case TWS_HTTP_METHOD::TWS_HTTP_METHOD_DELETE:
                 return "DELETE";
             default:
                 return "";
         }
     }
     
-    const std::string TWS::convertHTTPMethodToPocoHTTPMethod(HTTP_METHOD method)
+    const std::string TWS::convertHTTPMethodToPocoHTTPMethod(TWS_HTTP_METHOD method)
     {
         switch (method) {
-            case HTTP_METHOD::GET:
+            case TWS_HTTP_METHOD::TWS_HTTP_METHOD_GET:
                 return Poco::Net::HTTPRequest::HTTP_GET;
-            case HTTP_METHOD::PUT:
+            case TWS_HTTP_METHOD::TWS_HTTP_METHOD_PUT:
                 return Poco::Net::HTTPRequest::HTTP_PUT;
-            case HTTP_METHOD::POST:
+            case TWS_HTTP_METHOD::TWS_HTTP_METHOD_POST:
                 return Poco::Net::HTTPRequest::HTTP_POST;
-            case HTTP_METHOD::DELETE:
+            case TWS_HTTP_METHOD::TWS_HTTP_METHOD_DELETE:
                 return Poco::Net::HTTPRequest::HTTP_DELETE;
             default:
                 return "";
         }
+    }
+    
+    Poco::DynamicStruct TWS::stringToJSON(const std::string& str)
+    {
+        Poco::JSON::Parser parser;
+        Poco::Dynamic::Var var = parser.parse(str);
+        return *(var.extract<Poco::JSON::Object::Ptr>());
+    }
+    
+    const std::string TWS::pocoArrayToString(const Poco::Dynamic::Array array)
+    {
+        std::string result;
+        result += "[";
+        
+        if (!array.empty())
+        {
+            for (auto it = array.begin(); it != array.end(); ++it)
+            {
+                result += it->toString();
+                result += ',';
+            }
+            result.pop_back();
+        }
+        
+        result += "]";
+        
+        return result;
     }
 }
