@@ -127,14 +127,14 @@ class TWS
     JSON.parse(response.body)
   end
   
-  def get_link id, filename=nil, expire_time=nil
+  def get_link id, filename=nil, expire_time=nil, content_type=nil
     t = expire expire_time
     if filename.nil?
       sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/models/#{id}/download|
-      "#{stor_host}/api/v#{api_version}/models/#{id}/download?expire=#{t}&key=#{api_key}&signature=#{sig}"
+      "#{stor_host}/api/v#{api_version}/models/#{id}/download?expire=#{t}&key=#{api_key}&signature=#{sig}&content_type=#{content_type}"
     else
       sig = signature %|GET\n\n#{t}\n/api/v#{api_version}/models/#{id}/#{URI.escape(filename)}|
-      "#{stor_host}/api/v#{api_version}/models/#{id}/#{URI.escape(filename)}?expire=#{t}&key=#{api_key}&signature=#{sig}"
+      "#{stor_host}/api/v#{api_version}/models/#{id}/#{URI.escape(filename)}?expire=#{t}&key=#{api_key}&signature=#{sig}&content_type=#{content_type}"
     end
   end
   
