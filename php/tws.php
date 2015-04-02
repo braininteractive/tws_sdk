@@ -160,7 +160,7 @@ class Tws{
     return $this->get_response("POST", $request_url, $options);   
   }
 
-  function get_link($id = null, $filename = null, $expire_sec = null) {
+  function get_link($id = null, $filename = null, $expire_sec = null, $content_type = null) {
     if($id == null) throw new Exception("id is missing");
 
     $t = $this->get_expire($expire_sec);
@@ -168,10 +168,10 @@ class Tws{
     
     if($filename == null) {
       $signature = $this->get_signature("GET", $endpoint . "/download", $t);
-      $uri = $this->stor_host . "/api/v" . $this->api_version . $endpoint . "/download?expire=" . $t . "&key=" . $this->api_key . "&signature=" . $signature;
+      $uri = $this->stor_host . "/api/v" . $this->api_version . $endpoint . "/download?expire=" . $t . "&key=" . $this->api_key . "&signature=" . $signature . "&content_type=" . $content_type;
     } else {
       $signature = $this->get_signature("GET", $endpoint . "/" . rawurldecode($filename), $t);
-      $uri = $this->stor_host . "/api/v" . $this->api_version . $endpoint . "/" . rawurldecode($filename)  . "?expire=" . $t . "&key=" . $this->api_key . "&signature=" . $signature;
+      $uri = $this->stor_host . "/api/v" . $this->api_version . $endpoint . "/" . rawurldecode($filename)  . "?expire=" . $t . "&key=" . $this->api_key . "&signature=" . $signature . "&content_type=" . $content_type;
     }
     return $uri;
   }
