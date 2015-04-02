@@ -154,18 +154,18 @@ class Tws:
     else:
       raise Exception(upload_response.body)
     
-  def get_link(self, mid, filename=None, expire_sec=None):
+  def get_link(self, mid, filename=None, expire_sec=None, content_type=''):
     self.set_expire(expire_sec)
     if filename == None:
       sig = self.signature(self.string_to_sign('GET', '/models/%s/download' % mid))
-      return "%s/api/v%s/models/%s/download?expire=%s&key=%s&signature=%s" % (self.stor_host, self.api_version, mid, self.expire, self.api_key, sig)
+      return "%s/api/v%s/models/%s/download?expire=%s&key=%s&signature=%s&content_type=%s" % (self.stor_host, self.api_version, mid, self.expire, self.api_key, sig, content_type)
     else:
       try:
         escaped_filename = urllib.parse.quote(filename)
       except:
         escaped_filename = urllib.quote(filename)
       sig = self.signature(self.string_to_sign('GET', '/models/%s/%s' % (mid, escaped_filename)))
-      return "%s/api/v%s/models/%s/%s?expire=%s&key=%s&signature=%s" % (self.stor_host, self.api_version, mid, escaped_filename, self.expire, self.api_key, sig)
+      return "%s/api/v%s/models/%s/%s?expire=%s&key=%s&signature=%s&content_type=%s" % (self.stor_host, self.api_version, mid, escaped_filename, self.expire, self.api_key, sig, content_type)
     
   def get_sessions(self, state=''):
     self.set_expire()
