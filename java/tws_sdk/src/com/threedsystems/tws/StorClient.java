@@ -190,7 +190,7 @@ public class StorClient extends Tws{
 			try
 			{
 				strSignature = TwsUtil.GetSignature("GET", strEndpoint + URLEncoder.encode(strFileName, "UTF-8"), iExpire);
-				strUri = Tws.stor_host + "/api/v" + Tws.api_version + strEndpoint + "/" + URLEncoder.encode(strFileName, "UTF-8") + "?expire=" + iExpire + "&key=" + Tws.api_key + "&signature=" + strSignature + "&content_type" + content_type;;
+				strUri = Tws.stor_host + "/api/v" + Tws.api_version + strEndpoint + "/" + URLEncoder.encode(strFileName, "UTF-8") + "?expire=" + iExpire + "&key=" + Tws.api_key + "&signature=" + strSignature + "&content_type" + content_type;
 			}
 			catch(Exception e)
 			{
