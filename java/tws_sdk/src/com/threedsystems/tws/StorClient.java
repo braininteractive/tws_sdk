@@ -173,6 +173,10 @@ public class StorClient extends Tws{
 	}
 	
 	public String GetLink(String strModelId, String strFileName, int expire_sec) {
+		return GetLink(strModelId, strFileName, expire_sec, null);
+	}
+	
+	public String GetLink(String strModelId, String strFileName, int expire_sec, String content_type) {
 		
 		int iExpire = TwsUtil.GetExpire(expire_sec);
 		String strEndpoint = "/models/" + strModelId;
@@ -181,12 +185,12 @@ public class StorClient extends Tws{
 		
 		if(strFileName.isEmpty()) {
 			strSignature = TwsUtil.GetSignature("GET", strEndpoint + "download", iExpire);
-			strUri = Tws.stor_host + "/api/v" + Tws.api_version + strEndpoint + "/download?expire=" + iExpire + "&key=" + Tws.api_key + "&signature=" + strSignature; 
+			strUri = Tws.stor_host + "/api/v" + Tws.api_version + strEndpoint + "/download?expire=" + iExpire + "&key=" + Tws.api_key + "&signature=" + strSignature + "&content_type" + content_type; 
 		} else {
 			try
 			{
 				strSignature = TwsUtil.GetSignature("GET", strEndpoint + URLEncoder.encode(strFileName, "UTF-8"), iExpire);
-				strUri = Tws.stor_host + "/api/v" + Tws.api_version + strEndpoint + "/" + URLEncoder.encode(strFileName, "UTF-8") + "?expire=" + iExpire + "&key=" + Tws.api_key + "&signature=" + strSignature;
+				strUri = Tws.stor_host + "/api/v" + Tws.api_version + strEndpoint + "/" + URLEncoder.encode(strFileName, "UTF-8") + "?expire=" + iExpire + "&key=" + Tws.api_key + "&signature=" + strSignature + "&content_type" + content_type;;
 			}
 			catch(Exception e)
 			{
