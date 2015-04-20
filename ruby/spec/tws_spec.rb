@@ -9,8 +9,8 @@ load '../tws.rb'
 describe TWS do
 
   before(:all) do
-    @tws = TWS.new  :api_key => ENV['TWS_STAGING_KEY'],
-                    :api_secret => ENV['TWS_STAGING_SECRET'],
+    @tws = TWS.new  :api_key => ENV['TWS_STAGING_KEY'] || ENV['TWS_KEY'],
+                    :api_secret => ENV['TWS_STAGING_SECRET'] || ENV['TWS_SECRET'],
                     :stid_host => "https://stid-staging.herokuapp.com",
                     :stor_host => "https://stor-staging.herokuapp.com",
                     :stom_host => "https://stom-staging.herokuapp.com",
