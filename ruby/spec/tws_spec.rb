@@ -97,6 +97,7 @@ describe TWS do
   describe "STOM" do
     before(:all) do
       @s = @tws.create_session 400, "latest"
+      sleep(2)
     end
     
     it "creates a session" do
@@ -130,7 +131,7 @@ describe TWS do
       end
     end
 
-    def run_a_code(code_fn, seconds=10)
+    def run_a_code(code_fn, seconds=5)
       @run = @tws.create_run(@s["id"], @default_platform, File.read(code_fn))
       sleep(seconds)
       return JSON.parse(@tws.get_run(@s["id"], @run["id"])["result"])
