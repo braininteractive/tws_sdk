@@ -25,8 +25,8 @@ describe TWS do
   end
   
   describe "STID" do
-    it "authenticates" do
-      @tws.authenticate["authenticated"].should == false
+    it "authenticates API call" do
+      @tws.authenticate["authenticated"].should == true
     end
   end
   
@@ -55,7 +55,7 @@ describe TWS do
       @tws.presigned_upload_form["upload_id"].should_not be_blank
     end
     
-    describe "uploads a model" do
+    describe "for model uploading" do
       before(:all) do
         @uploaded_model = @tws.upload_model("tws_spec.rb", :meta => {:filename => 'tws_spec.rb', :filesize => File.size('tws_spec.rb')})
       end
@@ -81,8 +81,8 @@ describe TWS do
       end
     end
     
-    describe "upload failure" do
-      it "raise when s3 returns other than 204" do
+    describe "in case of upload failure" do
+      it "raises exception when s3 returns other than 204" do
         RestClient.stub(:post).and_return(double(:code => 400, :body => 'Error'))
         expect { @tws.upload_model("tws_spec.rb", :meta => {:filename => 'tws_spec.rb', :filesize => File.size('tws_spec.rb')}) }.to raise_error
       end
@@ -111,21 +111,21 @@ describe TWS do
       @tws.get_sessions.first["id"] == @s["id"]
     end
     
-    describe "run with blender" do
+    describe "with blender" do
       before(:all) do
         @run = @tws.create_run(@s["id"], "blender", "print('3WS rocks hard!')")
-        sleep(10)
       end
       
-      it "runs a code" do
+      it "creates a Run record" do
         @run["id"].should_not be_blank
       end
     
-      it "gets a run" do
+      it "gets the result from the Run" do
+        sleep(10)
         @tws.get_run(@s["id"], @run["id"])["result"].should include("3WS rocks hard!")
       end
       
-      it "gets runs" do
+      it "returns created Runs" do
         @tws.get_runs(@s["id"]).should_not be_empty
       end
     end
@@ -136,19 +136,19 @@ describe TWS do
       return JSON.parse(@tws.get_run(@s["id"], @run["id"])["result"])
     end
 
-    describe "test ADP" do
+    describe "with ADP" do
       before(:all) do
         @default_platform = 'blender'
       end
 
-      it "runs ADP mesh creation" do
-        results = run_a_code('codes/adp.mesh_creation.py', 15)
+      it "creates ADP mesh" do
+        results = run_a_code('codes/adp.mesh_creation.py', 10)
         results['numPoints'].should == 3
         results['numTriangles'].should == 1
       end
     end
 
-    describe "test validator" do
+    describe "with Validator" do
       def valid_results?(results, num_units, num_processes)
         return false unless results.kind_of?(Array) and results.length == num_units
         results.each do |result|
@@ -163,18 +163,18 @@ describe TWS do
         @default_platform = 'blender'
       end
 
-      it "runs with single unit and process" do
-        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 20)
+      it "validates single unit and process" do
+        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 15)
         valid_results?(results, 1, 1).should == true
       end
 
-      it "runs with multiple units and processes" do
-        results = run_a_code('codes/validator.unit_x3_and_pp_x3.py', 30)
+      it "validates multiple units and processes" do
+        results = run_a_code('codes/validator.unit_x3_and_pp_x3.py', 20)
         valid_results?(results, 3, 3).should == true
       end
     end
 
-    describe "test renderer" do
+    describe "with renderer" do
       def valid_results?(results, num_renders)
         return false unless results['result']
         return false unless results['outfiles'].length == num_renders
@@ -185,42 +185,42 @@ describe TWS do
         @default_platform = 'blender'
       end
 
-      it "runs render_360()" do
-        results = run_a_code('codes/renderer.render_360.py', 30)
+      it "renders 360 views with render_360()" do
+        results = run_a_code('codes/renderer.render_360.py', 10)
         valid_results?(results, 3).should == true
       end
 
-      it "runs render_4view()" do
-        results = run_a_code('codes/renderer.render_4view.py', 20)
+      it "renders 4 views with render_4view()" do
+        results = run_a_code('codes/renderer.render_4view.py', 15)
         valid_results?(results, 4).should == true
       end
 
-      it "runs render_custom()" do
-        results = run_a_code('codes/renderer.render_custom.py', 20)
+      it "renders custom view with render_custom()" do
+        results = run_a_code('codes/renderer.render_custom.py', 10)
         valid_results?(results, 2).should == true
       end
     end
 
-    describe "testing CMR conversion" do
+    describe "with CMR conversion" do
       before(:all) do
         @default_platform = 'blender'
       end
 
-      it "runs with STL mesh" do
-        results = run_a_code('codes/cmr.meshconv.py', 40)
+      it "creates CMR from STL mesh" do
+        results = run_a_code('codes/cmr.meshconv.py', 30)
         results['STORID'].should == ['e3cdba7295']
         results['CMR'].should_not be_blank
         results['CMR']['e3cdba7295'].should_not be_blank
       end
     end
 
-    describe "testing file conversion" do
+    describe "with file conversion" do
       before(:all) do
         @default_platform = 'blender'
       end
 
-      it "convert a mesh as well as applying a transformation matrix" do
-        results = run_a_code('codes/conversion.transform.py', 350)
+      it "converts a mesh and apply a transformation matrix" do
+        results = run_a_code('codes/conversion.transform.py', 15)
         results['result'].should == true
       end
     end
