@@ -97,6 +97,7 @@ describe TWS do
   describe "STOM" do
     before(:all) do
       @s = @tws.create_session 400, "latest"
+      sleep(2)
     end
     
     it "creates a session" do
