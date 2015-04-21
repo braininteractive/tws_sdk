@@ -26,7 +26,7 @@ describe TWS do
   
   describe "STID" do
     it "authenticates" do
-      @tws.authenticate["authenticated"].should == false
+      @tws.authenticate["authenticated"].should == true
     end
   end
   
