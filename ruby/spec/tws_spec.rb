@@ -114,7 +114,7 @@ describe TWS do
     describe "run with blender" do
       before(:all) do
         @run = @tws.create_run(@s["id"], "blender", "print('3WS rocks hard!')")
-        sleep(2)
+        sleep(10)
       end
       
       it "runs a code" do
@@ -130,7 +130,7 @@ describe TWS do
       end
     end
 
-    def run_a_code(code_fn, seconds=5)
+    def run_a_code(code_fn, seconds=10)
       @run = @tws.create_run(@s["id"], @default_platform, File.read(code_fn))
       sleep(seconds)
       return JSON.parse(@tws.get_run(@s["id"], @run["id"])["result"])
