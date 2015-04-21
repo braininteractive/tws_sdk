@@ -114,7 +114,7 @@ describe TWS do
     describe "run with blender" do
       before(:all) do
         @run = @tws.create_run(@s["id"], "blender", "print('3WS rocks hard!')")
-        sleep(10)
+        sleep(5)
       end
       
       it "runs a code" do
@@ -130,7 +130,7 @@ describe TWS do
       end
     end
 
-    def run_a_code(code_fn, seconds=10)
+    def run_a_code(code_fn, seconds=5)
       @run = @tws.create_run(@s["id"], @default_platform, File.read(code_fn))
       sleep(seconds)
       return JSON.parse(@tws.get_run(@s["id"], @run["id"])["result"])
@@ -142,7 +142,7 @@ describe TWS do
       end
 
       it "runs ADP mesh creation" do
-        results = run_a_code('codes/adp.mesh_creation.py', 15)
+        results = run_a_code('codes/adp.mesh_creation.py', 10)
         results['numPoints'].should == 3
         results['numTriangles'].should == 1
       end
@@ -164,12 +164,12 @@ describe TWS do
       end
 
       it "runs with single unit and process" do
-        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 20)
+        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 15)
         valid_results?(results, 1, 1).should == true
       end
 
       it "runs with multiple units and processes" do
-        results = run_a_code('codes/validator.unit_x3_and_pp_x3.py', 30)
+        results = run_a_code('codes/validator.unit_x3_and_pp_x3.py', 20)
         valid_results?(results, 3, 3).should == true
       end
     end
@@ -186,17 +186,17 @@ describe TWS do
       end
 
       it "runs render_360()" do
-        results = run_a_code('codes/renderer.render_360.py', 30)
+        results = run_a_code('codes/renderer.render_360.py', 10)
         valid_results?(results, 3).should == true
       end
 
       it "runs render_4view()" do
-        results = run_a_code('codes/renderer.render_4view.py', 20)
+        results = run_a_code('codes/renderer.render_4view.py', 15)
         valid_results?(results, 4).should == true
       end
 
       it "runs render_custom()" do
-        results = run_a_code('codes/renderer.render_custom.py', 20)
+        results = run_a_code('codes/renderer.render_custom.py', 10)
         valid_results?(results, 2).should == true
       end
     end
@@ -207,7 +207,7 @@ describe TWS do
       end
 
       it "runs with STL mesh" do
-        results = run_a_code('codes/cmr.meshconv.py', 40)
+        results = run_a_code('codes/cmr.meshconv.py', 30)
         results['STORID'].should == ['e3cdba7295']
         results['CMR'].should_not be_blank
         results['CMR']['e3cdba7295'].should_not be_blank
@@ -220,7 +220,7 @@ describe TWS do
       end
 
       it "convert a mesh as well as applying a transformation matrix" do
-        results = run_a_code('codes/conversion.transform.py', 350)
+        results = run_a_code('codes/conversion.transform.py', 15)
         results['result'].should == true
       end
     end
