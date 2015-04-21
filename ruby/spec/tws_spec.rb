@@ -26,7 +26,7 @@ describe TWS do
   
   describe "STID" do
     it "authenticates" do
-      @tws.authenticate["authenticated"].should == true
+      @tws.authenticate["authenticated"].should == false
     end
   end
   
@@ -96,7 +96,7 @@ describe TWS do
   
   describe "STOM" do
     before(:all) do
-      @s = @tws.create_session 300, "latest"
+      @s = @tws.create_session 400, "latest"
     end
     
     it "creates a session" do
@@ -114,7 +114,7 @@ describe TWS do
     describe "run with blender" do
       before(:all) do
         @run = @tws.create_run(@s["id"], "blender", "print('3WS rocks hard!')")
-        sleep(15)
+        sleep(10)
       end
       
       it "runs a code" do
@@ -130,7 +130,7 @@ describe TWS do
       end
     end
 
-    def run_a_code(code_fn, seconds=15)
+    def run_a_code(code_fn, seconds=10)
       @run = @tws.create_run(@s["id"], @default_platform, File.read(code_fn))
       sleep(seconds)
       return JSON.parse(@tws.get_run(@s["id"], @run["id"])["result"])
@@ -164,7 +164,7 @@ describe TWS do
       end
 
       it "runs with single unit and process" do
-        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 30)
+        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 20)
         valid_results?(results, 1, 1).should == true
       end
 
@@ -191,12 +191,12 @@ describe TWS do
       end
 
       it "runs render_4view()" do
-        results = run_a_code('codes/renderer.render_4view.py', 30)
+        results = run_a_code('codes/renderer.render_4view.py', 20)
         valid_results?(results, 4).should == true
       end
 
       it "runs render_custom()" do
-        results = run_a_code('codes/renderer.render_custom.py', 30)
+        results = run_a_code('codes/renderer.render_custom.py', 20)
         valid_results?(results, 2).should == true
       end
     end
@@ -207,7 +207,7 @@ describe TWS do
       end
 
       it "runs with STL mesh" do
-        results = run_a_code('codes/cmr.meshconv.py', 60)
+        results = run_a_code('codes/cmr.meshconv.py', 40)
         results['STORID'].should == ['e3cdba7295']
         results['CMR'].should_not be_blank
         results['CMR']['e3cdba7295'].should_not be_blank
@@ -220,7 +220,7 @@ describe TWS do
       end
 
       it "convert a mesh as well as applying a transformation matrix" do
-        results = run_a_code('codes/conversion.transform.py', 400)
+        results = run_a_code('codes/conversion.transform.py', 350)
         results['result'].should == true
       end
     end
