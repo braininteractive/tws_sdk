@@ -19,8 +19,8 @@ describe TWS do
   
   describe "api key and secret" do
     it "need to be set" do
-      ENV['TWS_STAGING_KEY'].should_not be_blank
-      ENV['TWS_STAGING_SECRET'].should_not be_blank
+      ENV['TWS_KEY'].should_not be_blank
+      ENV['TWS_SECRET'].should_not be_blank
     end
   end
   
