@@ -96,7 +96,7 @@ describe TWS do
   
   describe "STOM" do
     before(:all) do
-      @s = @tws.create_session 400, "latest"
+      @s = @tws.create_session 600, "latest"
     end
     
     it "creates a session" do
@@ -111,38 +111,40 @@ describe TWS do
       @tws.get_sessions.first["id"] == @s["id"]
     end
     
+    def run_a_code(code_fn=nil, code_str=nil, sec=30)
+      code = code_fn.nil? ? code_str : File.read(code_fn)
+      @run = @tws.create_run(@s["id"], @default_platform, code)
+      t = sec.seconds.from_now
+      begin
+        sleep(2)
+        r = @tws.get_run(@s["id"], @run["id"])["result"] rescue nil
+        result = (JSON.parse(r) rescue nil) || r
+      end while result.nil? && (Time.now < t)
+      return result
+    end
+    
     describe "with blender" do
       before(:all) do
-        @run = @tws.create_run(@s["id"], "blender", "print('3WS rocks hard!')")
+        @default_platform = 'blender'
       end
-      
-      it "creates a Run record" do
-        @run["id"].should_not be_blank
-      end
-    
-      it "gets the result from the Run" do
-        sleep(15)
-        @tws.get_run(@s["id"], @run["id"])["result"].should include("3WS rocks hard!")
+
+      it "prints an output" do
+        result = run_a_code(nil, "print('3WS rocks hard!')")
+        result.should include("3WS rocks hard!")
       end
       
       it "returns created Runs" do
         @tws.get_runs(@s["id"]).should_not be_empty
       end
     end
-
-    def run_a_code(code_fn, seconds=5)
-      @run = @tws.create_run(@s["id"], @default_platform, File.read(code_fn))
-      sleep(seconds)
-      return JSON.parse(@tws.get_run(@s["id"], @run["id"])["result"])
-    end
-
+    
     describe "with ADP" do
       before(:all) do
         @default_platform = 'blender'
       end
 
       it "creates ADP mesh" do
-        results = run_a_code('codes/adp.mesh_creation.py', 10)
+        results = run_a_code('codes/adp.mesh_creation.py')
         results['numPoints'].should == 3
         results['numTriangles'].should == 1
       end
@@ -164,12 +166,12 @@ describe TWS do
       end
 
       it "validates single unit and process" do
-        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py', 15)
+        results = run_a_code('codes/validator.unit_x1_and_pp_x1.py')
         valid_results?(results, 1, 1).should == true
       end
 
       it "validates multiple units and processes" do
-        results = run_a_code('codes/validator.unit_x3_and_pp_x3.py', 20)
+        results = run_a_code('codes/validator.unit_x3_and_pp_x3.py')
         valid_results?(results, 3, 3).should == true
       end
     end
@@ -186,17 +188,17 @@ describe TWS do
       end
 
       it "renders 360 views with render_360()" do
-        results = run_a_code('codes/renderer.render_360.py', 10)
+        results = run_a_code('codes/renderer.render_360.py')
         valid_results?(results, 3).should == true
       end
 
       it "renders 4 views with render_4view()" do
-        results = run_a_code('codes/renderer.render_4view.py', 15)
+        results = run_a_code('codes/renderer.render_4view.py')
         valid_results?(results, 4).should == true
       end
 
       it "renders custom view with render_custom()" do
-        results = run_a_code('codes/renderer.render_custom.py', 10)
+        results = run_a_code('codes/renderer.render_custom.py')
         valid_results?(results, 2).should == true
       end
     end
@@ -207,7 +209,7 @@ describe TWS do
       end
 
       it "creates CMR from STL mesh" do
-        results = run_a_code('codes/cmr.meshconv.py', 30)
+        results = run_a_code('codes/cmr.meshconv.py')
         results['STORID'].should == ['e3cdba7295']
         results['CMR'].should_not be_blank
         results['CMR']['e3cdba7295'].should_not be_blank
@@ -220,7 +222,7 @@ describe TWS do
       end
 
       it "converts a mesh and apply a transformation matrix" do
-        results = run_a_code('codes/conversion.transform.py', 15)
+        results = run_a_code('codes/conversion.transform.py')
         results['result'].should == true
       end
     end
