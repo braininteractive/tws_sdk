@@ -97,7 +97,6 @@ describe TWS do
   describe "STOM" do
     before(:all) do
       @s = @tws.create_session 400, "latest"
-      sleep(2)
     end
     
     it "creates a session" do
@@ -122,7 +121,7 @@ describe TWS do
       end
     
       it "gets the result from the Run" do
-        sleep(10)
+        sleep(15)
         @tws.get_run(@s["id"], @run["id"])["result"].should include("3WS rocks hard!")
       end
       
