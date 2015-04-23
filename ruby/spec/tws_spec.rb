@@ -226,6 +226,17 @@ describe TWS do
         results['result'].should == true
       end
     end
+
+    describe "with model geometry for QSoft" do
+      before(:all) do
+        @default_platform = 'blender'
+      end
+      
+      it "extract geometry information for QSoft" do
+        results = run_a_code('codes/qsoft_model_geometry.py')
+        results['result'].should == true
+      end
+    end
   end 
 
   describe "STOPP" do
