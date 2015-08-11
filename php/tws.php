@@ -274,8 +274,8 @@ class Tws{
     if($method == null) throw new Exception("method is missing");
     if($endpoint == null) throw new Exception("endpoint is missing");
     if($expire == null) throw new Exception("expire is missing");
-
-    $base_string = $method . PHP_EOL . PHP_EOL . $expire . PHP_EOL . "/api/v" . $this->api_version . $endpoint;
+    # PHP_EOL can be '\n' or '\r\n'.
+    $base_string = $method . "\n" . "\n" . $expire . "\n" . "/api/v" . $this->api_version . $endpoint;
     return rawurlencode(base64_encode(hash_hmac('sha1', $base_string, $this->api_secret, true)));
   }
 
