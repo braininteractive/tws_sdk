@@ -189,11 +189,11 @@ class Tws:
     else:
       return response.status_code
 
-  def create_session(self, timeout=60, engine_version='latest'):
+  def create_session(self, timeout=60, engine_version='latest', code=None):
     self.set_expire()
     response = requests.post(
       self.endpoint('stom', '/sessions'),
-      data = json.dumps({"timeout": timeout, "engine_version": engine_version}),
+      data = json.dumps({"timeout": timeout, "engine_version": engine_version, "code": code}),
       headers = { 'Authorization': self.authorization('POST', '/sessions'), 'Content-Type': 'application/json' }
     )
     if response.status_code == 201:

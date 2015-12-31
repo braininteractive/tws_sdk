@@ -171,12 +171,12 @@ class TWS
     JSON.parse(response.body)
   end
   
-  def create_session timeout=60, engine_version='latest'
+  def create_session timeout=60, engine_version='latest', code=nil
     t = expire
     sig = signature %|POST\n\n#{t}\n/api/v#{api_version}/sessions|
     auth_header = "3WS #{api_key}:#{sig}"
     response = RestClient.post  "#{stom_host}/api/v#{api_version}/sessions?expire=#{t}",
-                                {:timeout => timeout, :engine_version => engine_version},
+                                {:timeout => timeout, :engine_version => engine_version, :code => code},
                                 :Authorization => auth_header
     JSON.parse(response.body)
   end
