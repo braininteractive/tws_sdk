@@ -23,7 +23,7 @@ class TWS
     CGI.escape(
       Base64.encode64(
         OpenSSL::HMAC.digest(
-          OpenSSL::Digest::Digest.new('sha1'),
+          OpenSSL::Digest.new('sha1'),
           api_secret,
           string_to_sign
         )
