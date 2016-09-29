@@ -111,7 +111,7 @@ describe TWS do
       @tws.get_sessions.first["id"] == @s["id"]
     end
     
-    def run_a_code(code_fn=nil, code_str=nil, sec=30)
+    def run_a_code(code_fn=nil, code_str=nil, sec=100)
       code = code_fn.nil? ? code_str : File.read(code_fn)
       @run = @tws.create_run(@s["id"], @default_platform, code)
       t = sec.seconds.from_now
