@@ -356,7 +356,7 @@ JSON body:
 { "meta": {"new name":"awesome new key", "existing key":"overwrite value for existing key"} }
 ```
 
-### Delete a file
+### Delete a model
 To delete the file from STOR,
 ```
 DELETE https://stor.dddws.com/api/v1/models/772ebeaabf?expire=1395187476
